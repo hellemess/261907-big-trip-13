@@ -127,19 +127,19 @@ export const getEditTemplate = (event = {}) => {
     : ``}
     </header>
     ${optionsTemplate || descriptionTemplate
-      ? `<section class="event__details">
-          ${optionsTemplate
-      ? `<section class="event__section  event__section--offers">
-                <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-                <div class="event__available-offers">
-                  ${optionsTemplate}
-                </div>
-              </section>`
-      : ``}
-          ${descriptionTemplate
-      ? `${descriptionTemplate}`
-      : ``}
-         </section>`
-      : ``}
+    ? `<section class="event__details">
+        ${optionsTemplate
+    ? `<section class="event__section  event__section--offers">
+        <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+        <div class="event__available-offers">
+          ${optionsTemplate}
+        </div>
+      </section>`
+    : ``}
+      ${descriptionTemplate
+    ? `${descriptionTemplate}`
+    : ``}
+      </section>`
+    : ``}
   </form>`;
 };
