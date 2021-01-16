@@ -1,5 +1,19 @@
 import {DESTINATIONS, OPTIONS, TYPES_IN, TYPES_TO} from '../const';
-import {formatEventEditTime} from '../utils';
+import {createElement, formatEventEditTime} from '../utils';
+
+const BLANK_EVENT = {
+  type: `Bus`,
+  prep: `to`,
+  destination: ``,
+  cost: ``,
+  isFavorite: false,
+  options: [],
+  info: null,
+  time: {
+    start: new Date(),
+    finish: new Date()
+  }
+};
 
 const getDescriptionTemplate = (info) => {
   if (info === null) {
@@ -47,26 +61,14 @@ const getTypeTemplate = (type, isChecked) =>
     <label class="event__type-label  event__type-label--${type.toLowerCase()}" for="event-type-${type.toLowerCase()}-1">${type}</label>
   </div>`;
 
-export const getEditTemplate = (event = {}) => {
-  const {
-    type = `Bus`,
-    prep = `to`,
-    destination = ``,
-    cost = ``,
-    isFavorite = false,
-    options = [],
-    info = null,
-    time = {
-      start: new Date(),
-      finish: new Date()
-    }
-  } = event;
+const getEventEditTemplate = (tripEvent) => {
+  const {type, prep, destination, cost, options, info, time} = tripEvent;
 
   const {start, finish} = time;
   const transferTypesTemplate = TYPES_TO.map((it) => getTypeTemplate(it, it === type)).join(``);
   const activityTypesTemplate = TYPES_IN.map((it) => getTypeTemplate(it, it === type)).join(``);
   const destinationOptionsTemplate = DESTINATIONS.map((it) => getDestionationOptionTemplate(it)).join(``);
-  const isNew = Object.keys(event).length > 0 ? false : true;
+  const isNew = destination === `` ? true : false;
   const availableOptions = OPTIONS.filter((option) => option.forTypes.indexOf(type) >= 0);
   const optionsTemplate = availableOptions.length > 0 ? availableOptions.map((it) => getOptionsItemTemplate(it, options)).join(``) : false;
   const descriptionTemplate = getDescriptionTemplate(info);
@@ -114,15 +116,8 @@ export const getEditTemplate = (event = {}) => {
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
       <button class="event__reset-btn" type="reset">${isNew ? `Cancel` : `Delete`}</button>
       ${!isNew
-    ? `<input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``} />
-        <label class="event__favorite-btn" for="event-favorite-1">
-          <span class="visually-hidden">Add to favorite</span>
-          <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
-            <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z" />
-          </svg>
-      </label>
-      <button class="event__rollup-btn" type="button">
-        <span class="visually-hidden">Open event</span>
+    ? `<button class="event__rollup-btn" type="button">
+        <span class="visually-hidden">Close event</span>
       </button>`
     : ``}
     </header>
@@ -143,3 +138,26 @@ export const getEditTemplate = (event = {}) => {
     : ``}
   </form>`;
 };
+
+export default class EventEditView {
+  constructor(tripEvent = BLANK_EVENT) {
+    this._element = null;
+    this._event = tripEvent;
+  }
+
+  get element() {
+    if (!this._element) {
+      this._element = createElement(this.template);
+    }
+
+    return this._element;
+  }
+
+  get template() {
+    return getEventEditTemplate(this._event);
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

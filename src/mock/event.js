@@ -72,11 +72,11 @@ export const generateTrip = (eventsCount) => {
   const events = new Array(eventsCount).fill().map(generateEvent);
   let start = generateTripStartTime();
 
-  for (let event of events) {
+  for (let tripEvent of events) {
     const eventTime = getRandomInteger(MIN_EVENT_TIME, MAX_EVENT_TIME);
     const finish = new Date(start.getTime() + eventTime);
 
-    event.time = {
+    tripEvent.time = {
       start,
       finish
     };
@@ -84,18 +84,5 @@ export const generateTrip = (eventsCount) => {
     start = finish;
   }
 
-  const trip = {};
-
-  for (let event of events) {
-    if (trip[event.time.start.toDateString()]) {
-      trip[event.time.start.toDateString()].push(event);
-    } else {
-      trip[event.time.start.toDateString()] = [event];
-    }
-  }
-
-  return {
-    days: trip,
-    events
-  };
+  return events;
 };

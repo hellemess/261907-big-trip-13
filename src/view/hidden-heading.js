@@ -1,8 +1,9 @@
 import {createElement} from '../utils';
 
-export default class InfoView {
-  constructor() {
+export default class HiddenHeadingView {
+  constructor(text) {
     this._element = null;
+    this._text = text;
   }
 
   get element() {
@@ -14,7 +15,7 @@ export default class InfoView {
   }
 
   get template() {
-    return `<section class="trip-main__trip-info  trip-info"></section>`;
+    return `<h2 class="visually-hidden">${this._text}</h2>`;
   }
 
   removeElement() {

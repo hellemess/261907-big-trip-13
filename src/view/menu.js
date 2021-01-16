@@ -1,6 +1,26 @@
-export const getMenuTemplate = () =>
-  `<h2 class="visually-hidden">Switch trip view</h2>
-  <nav class="trip-controls__trip-tabs  trip-tabs">
-    <a class="trip-tabs__btn  trip-tabs__btn--active" href="#">Table</a>
-    <a class="trip-tabs__btn" href="#">Stats</a>
-  </nav>`;
+import {createElement} from '../utils';
+
+export default class MenuView {
+  constructor() {
+    this._element = null;
+  }
+
+  get element() {
+    if (!this._element) {
+      this._element = createElement(this.template);
+    }
+
+    return this._element;
+  }
+
+  get template() {
+    return `<nav class="trip-controls__trip-tabs  trip-tabs">
+        <a class="trip-tabs__btn  trip-tabs__btn--active" href="#">Table</a>
+        <a class="trip-tabs__btn" href="#">Stats</a>
+      </nav>`;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
