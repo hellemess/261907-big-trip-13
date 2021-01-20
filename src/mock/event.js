@@ -1,5 +1,5 @@
 import {DESTINATIONS, OPTIONS, TYPES_IN, TYPES_TO} from '../const';
-import {getRandomArrayValue, getRandomInteger} from '../utils';
+import {getRandomArrayValue, getRandomInteger} from '../utils/common';
 
 const MAX_DAYS_GAP = 4;
 const MIN_EVENT_TIME = 30 * 60 * 1000;

@@ -1,23 +1,7 @@
-import {createElement} from '../utils';
+import AbstractView from './abstract';
 
-export default class ListView {
-  constructor() {
-    this._element = null;
-  }
-
-  get element() {
-    if (!this._element) {
-      this._element = createElement(this.template);
-    }
-
-    return this._element;
-  }
-
+export default class ListView extends AbstractView {
   get template() {
     return `<ul class="trip-events__list"></ul>`;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

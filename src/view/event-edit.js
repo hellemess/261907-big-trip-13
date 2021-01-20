@@ -1,5 +1,6 @@
+import AbstractView from './abstract';
 import {DESTINATIONS, OPTIONS, TYPES_IN, TYPES_TO} from '../const';
-import {createElement, formatEventEditTime} from '../utils';
+import {formatEventEditTime} from '../utils/trip';
 
 const BLANK_EVENT = {
   type: `Bus`,
@@ -139,25 +140,33 @@ const getEventEditTemplate = (tripEvent) => {
   </form>`;
 };
 
-export default class EventEditView {
+export default class EventEditView extends AbstractView {
   constructor(tripEvent = BLANK_EVENT) {
-    this._element = null;
+    super();
     this._event = tripEvent;
+    this._closeClickHandler = this._closeClickHandler.bind(this);
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
   }
 
-  get element() {
-    if (!this._element) {
-      this._element = createElement(this.template);
-    }
+  _closeClickHandler(evt) {
+    this._callback.closeClick(evt);
+  }
 
-    return this._element;
+  _formSubmitHandler(evt) {
+    this._callback.formSubmit(evt);
   }
 
   get template() {
     return getEventEditTemplate(this._event);
   }
 
-  removeElement() {
-    this._element = null;
+  set closeClickHandler(callback) {
+    this._callback.closeClick = callback;
+    this.element.querySelector(`.event__rollup-btn`).addEventListener(`click`, this._closeClickHandler);
+  }
+
+  set formSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.element.addEventListener(`submit`, this._formSubmitHandler);
   }
 }

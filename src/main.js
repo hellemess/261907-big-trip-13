@@ -6,10 +6,11 @@ import {generateTrip} from './mock/event';
 import {generateFilter} from './mock/filter';
 import HiddenHeadingView from './view/hidden-heading';
 import InfoView from './view/info';
-import {KeyCodes, RenderPosition, render} from './utils';
+import {KeyCodes} from './utils/common';
 import ListView from './view/list';
 import MenuView from './view/menu';
 import NoEventsView from './view/no-events';
+import {RenderPosition, render, replace} from './utils/render';
 import RouteView from './view/route';
 import SortingView from './view/sorting';
 
@@ -18,23 +19,23 @@ const EVENTS_COUNT = 23;
 const trip = generateTrip(EVENTS_COUNT);
 const filter = generateFilter(trip);
 
-const headerElement = document.querySelector('.trip-main');
-const controlsElement = headerElement.querySelector(`.trip-controls`);
-const contentElement = document.querySelector(`.trip-events`);
+const header = document.querySelector('.trip-main');
+const controls = header.querySelector(`.trip-controls`);
+const content = document.querySelector(`.trip-events`);
 
-const infoElement = new InfoView();
-const eventsListElement = new ListView();
+const info = new InfoView();
+const eventsList = new ListView();
 
 const renderEvent = (tripEvent, container) => {
-  const eventElement = new EventView(tripEvent);
-  const eventEditElement = new EventEditView(tripEvent);
+  const eventItem = new EventView(tripEvent);
+  const eventEdit = new EventEditView(tripEvent);
 
   const switchEventToForm = () => {
-    container.replaceChild(eventEditElement.element, eventElement.element);
+    replace(eventEdit, eventItem);
   }
 
   const switchFormToEvent = () => {
-    container.replaceChild(eventElement.element, eventEditElement.element);
+    replace(eventItem, eventEdit);
   }
 
   const onEscKeyDown = (evt) => {
@@ -49,37 +50,36 @@ const renderEvent = (tripEvent, container) => {
     document.removeEventListener(`keydown`, onEscKeyDown);
   };
 
-  eventElement.element.querySelector(`.event__rollup-btn`).addEventListener(`click`, (evt) => {
-    evt.preventDefault();
+  eventItem.openClickHandler = () => {
     switchEventToForm();
     document.addEventListener(`keydown`, onEscKeyDown);
-  });
+  };
 
-  eventEditElement.element.querySelector(`.event__rollup-btn`).addEventListener(`click`, closeForm);
-  eventEditElement.element.addEventListener(`submit`, closeForm);
-  render(RenderPosition.BEFOREEND, container, eventElement.element);
+  eventEdit.closeClickHandler = closeForm;
+  eventEdit.formSubmitHandler = closeForm;
+  render(container, eventItem, RenderPosition.BEFOREEND);
 };
 
 const renderList = (trip, container) => {
   if (trip.length === 0) {
-    render(RenderPosition.BEFOREEND, container, new NoEventsView().element);
+    render(container, new NoEventsView(), RenderPosition.BEFOREEND);
   } else {
-    const daysListElement = new ListView(`trip-days`);
+    const daysList = new ListView(`trip-days`);
 
-    render(RenderPosition.AFTERBEGIN, headerElement, infoElement.element);
-    render(RenderPosition.AFTERBEGIN, infoElement.element, new RouteView(trip).element);
-    render(RenderPosition.BEFOREEND, infoElement.element, new CostView(trip).element);
-    render(RenderPosition.BEFOREEND, container, new SortingView().element);
-    render(RenderPosition.BEFOREEND, contentElement, eventsListElement.element);
+    render(header, info, RenderPosition.AFTERBEGIN);
+    render(info, new RouteView(trip), RenderPosition.AFTERBEGIN);
+    render(info, new CostView(trip), RenderPosition.BEFOREEND);
+    render(container, new SortingView(), RenderPosition.BEFOREEND);
+    render(content, eventsList, RenderPosition.BEFOREEND);
 
     for (let tripEvent of trip) {
-      renderEvent(tripEvent, eventsListElement.element);
+      renderEvent(tripEvent, eventsList);
     }
   }
 };
 
-render(RenderPosition.BEFOREEND, controlsElement, new HiddenHeadingView(`Switch trip view`).element);
-render(RenderPosition.BEFOREEND, controlsElement, new MenuView().element);
-render(RenderPosition.BEFOREEND, controlsElement, new HiddenHeadingView(`Filter events`).element);
-render(RenderPosition.BEFOREEND, controlsElement, new FilterView(filter).element);
-renderList(trip, contentElement);
+render(controls, new HiddenHeadingView(`Switch trip view`), RenderPosition.BEFOREEND);
+render(controls, new MenuView(), RenderPosition.BEFOREEND);
+render(controls, new HiddenHeadingView(`Filter events`), RenderPosition.BEFOREEND);
+render(controls, new FilterView(filter), RenderPosition.BEFOREEND);
+renderList(trip, content);

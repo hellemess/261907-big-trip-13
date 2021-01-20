@@ -1,23 +1,7 @@
-import {createElement} from '../utils';
+import AbstractView from './abstract';
 
-export default class InfoView {
-  constructor() {
-    this._element = null;
-  }
-
-  get element() {
-    if (!this._element) {
-      this._element = createElement(this.template);
-    }
-
-    return this._element;
-  }
-
+export default class InfoView extends AbstractView {
   get template() {
     return `<section class="trip-main__trip-info  trip-info"></section>`;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

@@ -1,24 +1,12 @@
-import {createElement} from '../utils';
+import AbstractView from './abstract';
 
-export default class HiddenHeadingView {
+export default class HiddenHeadingView extends AbstractView {
   constructor(text) {
-    this._element = null;
+    super();
     this._text = text;
-  }
-
-  get element() {
-    if (!this._element) {
-      this._element = createElement(this.template);
-    }
-
-    return this._element;
   }
 
   get template() {
     return `<h2 class="visually-hidden">${this._text}</h2>`;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
