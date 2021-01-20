@@ -59,4 +59,4 @@ export const replace = (newChild, oldChild) => {
   }
 
   parent.replaceChild(newChild, oldChild);
-}; 
+};
