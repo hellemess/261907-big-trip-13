@@ -1,4 +1,4 @@
-import {createElement} from '../utils';
+import AbstractView from './abstract';
 
 const getCostTemplate = (events) => {
   let cost = 0;
@@ -16,25 +16,13 @@ const getCostTemplate = (events) => {
   </p>`;
 };
 
-export default class CostView {
+export default class CostView extends AbstractView {
   constructor(events) {
-    this._element = null;
+    super();
     this._events = events;
-  }
-
-  get element() {
-    if (!this._element) {
-      this._element = createElement(this.template);
-    }
-
-    return this._element;
   }
 
   get template() {
     return getCostTemplate(this._events);
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

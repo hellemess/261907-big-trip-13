@@ -1,4 +1,4 @@
-import {createElement} from '../utils';
+import AbstractView from './abstract';
 
 const getRouteTemplate = (events) => {
   const places = [];
@@ -25,25 +25,13 @@ const getRouteTemplate = (events) => {
   </div>`;
 };
 
-export default class RouteView {
+export default class RouteView extends AbstractView {
   constructor(events) {
-    this._element = null;
+    super();
     this._events = events;
-  }
-
-  get element() {
-    if (!this._element) {
-      this._element = createElement(this.template);
-    }
-
-    return this._element;
   }
 
   get template() {
     return getRouteTemplate(this._events);
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

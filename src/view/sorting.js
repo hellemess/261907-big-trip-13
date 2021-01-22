@@ -1,18 +1,6 @@
-import {createElement} from '../utils';
+import AbstractView from './abstract';
 
-export default class SortingView {
-  constructor() {
-    this._element = null;
-  }
-
-  get element() {
-    if (!this._element) {
-      this._element = createElement(this.template);
-    }
-
-    return this._element;
-  }
-
+export default class SortingView extends AbstractView {
   get template() {
     return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
         <div class="trip-sort__item  trip-sort__item--day">
@@ -36,9 +24,5 @@ export default class SortingView {
           <label class="trip-sort__btn" for="sort-offer">Offers</label>
         </div>
       </form>`;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

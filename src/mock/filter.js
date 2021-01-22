@@ -1,4 +1,4 @@
-import {isFutureEvent} from '../utils';
+import {isFutureEvent} from '../utils/trip';
 
 const eventsToFilterMap = {
   everything: (events) => events.length,

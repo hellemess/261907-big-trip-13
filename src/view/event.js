@@ -1,4 +1,5 @@
-import {addZero, createElement, formatEventDate, formatEventTime} from '../utils';
+import {addZero, formatEventDate, formatEventTime} from '../utils/trip';
+import AbstractView from './abstract';
 
 const getTimeTemplate = (time) => {
   const {start, finish} = time;
@@ -69,25 +70,24 @@ const getEventTemplate = (tripEvent) => {
   </li>`;
 };
 
-export default class EventView {
+export default class EventView extends AbstractView {
   constructor(tripEvent) {
-    this._element = null;
+    super();
     this._event = tripEvent;
+    this._openClickHandler = this._openClickHandler.bind(this);
   }
 
-  get element() {
-    if (!this._element) {
-      this._element = createElement(this.template);
-    }
-
-    return this._element;
+  _openClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.openClick();
   }
 
   get template() {
     return getEventTemplate(this._event);
   }
 
-  removeElement() {
-    this._element = null;
+  set openClickHandler(callback) {
+    this._callback.openClick = callback;
+    this.element.querySelector(`.event__rollup-btn`).addEventListener(`click`, this._openClickHandler);
   }
 }
