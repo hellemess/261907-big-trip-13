@@ -74,7 +74,13 @@ export default class EventView extends AbstractView {
   constructor(tripEvent) {
     super();
     this._event = tripEvent;
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._openClickHandler = this._openClickHandler.bind(this);
+  }
+
+  _favoriteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.favoriteClick();
   }
 
   _openClickHandler(evt) {
@@ -84,6 +90,11 @@ export default class EventView extends AbstractView {
 
   get template() {
     return getEventTemplate(this._event);
+  }
+
+  set favoriteClickHandler(callback) {
+    this._callback.favoriteClick = callback;
+    this.element.querySelector(`.event__favorite-btn`).addEventListener(`click`, this._favoriteClickHandler);
   }
 
   set openClickHandler(callback) {

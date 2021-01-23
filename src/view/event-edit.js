@@ -149,11 +149,13 @@ export default class EventEditView extends AbstractView {
   }
 
   _closeClickHandler(evt) {
-    this._callback.closeClick(evt);
+    evt.preventDefault();
+    this._callback.closeClick();
   }
 
   _formSubmitHandler(evt) {
-    this._callback.formSubmit(evt);
+    evt.preventDefault();
+    this._callback.formSubmit(this._event);
   }
 
   get template() {
