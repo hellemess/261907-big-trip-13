@@ -30,13 +30,13 @@ export default class EventPresenter {
 
   _handleFavoriteClick() {
     this._changeData(
-      Object.assign(
-        {},
-        this._event,
-        {
-          isFavorite: !this._event.isFavorite
-        }
-      )
+        Object.assign(
+            {},
+            this._event,
+            {
+              isFavorite: !this._event.isFavorite
+            }
+        )
     );
   }
 
@@ -87,8 +87,7 @@ export default class EventPresenter {
     this._eventEdit.closeClickHandler = this._handleCloseClick;
     this._eventEdit.formSubmitHandler = this._handleFormSubmit;
 
-    if (prevEventItem === null || prevEventEdit === null)
-    {
+    if (prevEventItem === null || prevEventEdit === null) {
       render(this._eventsList, this._eventItem, RenderPosition.BEFOREEND);
       return;
     }

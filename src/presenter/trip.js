@@ -44,7 +44,7 @@ export default class TripPresenter {
 
   _renderEvent(tripEvent) {
     const eventPresenter = new EventPresenter(this._eventsList, this._handleEventChange, this._handleModeChange);
-    
+
     eventPresenter.init(tripEvent);
     this._eventPresenter[tripEvent.id] = eventPresenter;
   }
@@ -54,19 +54,19 @@ export default class TripPresenter {
     render(this._container, this._eventsList, RenderPosition.BEFOREEND);
     this._trip.forEach((tripEvent) => this._renderEvent(tripEvent));
   }
-  
+
   _renderNoEvents() {
     render(this._container, new NoEventsView(), RenderPosition.BEFOREEND);
   }
-  
+
   _renderRoute() {
     render(this._info, new RouteView(this._trip), RenderPosition.AFTERBEGIN);
   }
-  
+
   _renderSorting() {
     render(this._container, new SortingView(), RenderPosition.BEFOREEND);
   }
-  
+
   _renderTrip() {
     if (this._trip.length === 0) {
       this._renderNoEvents();
@@ -77,7 +77,7 @@ export default class TripPresenter {
       this._renderList();
     }
   }
-  
+
   init(trip) {
     this._trip = trip.slice();
     this._renderTrip();
