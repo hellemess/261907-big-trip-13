@@ -94,6 +94,12 @@ export const OPTIONS = [
   }
 ];
 
+export const SortTypes = {
+  DEFAULT: `default`,
+  PRICE: `price`,
+  TIME: `time`
+};
+
 export const TYPES_IN = [
   `Check-in`,
   `Sightseeing`,
