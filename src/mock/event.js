@@ -23,6 +23,8 @@ const generateDescription = () => {
   return descriptionSentences.slice(0, randomSentencesCount).join(` `);
 };
 
+const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+
 const generatePhotos = () => {
   const randomPhotosCount = getRandomInteger(1, MAX_PHOTOS_COUNT);
 
@@ -55,6 +57,7 @@ const generateEvent = () => {
   const options = getOptions(type);
 
   return {
+    id: generateId(),
     type,
     prep,
     destination: getRandomArrayValue(DESTINATIONS),
