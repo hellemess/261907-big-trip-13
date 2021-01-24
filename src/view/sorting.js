@@ -8,11 +8,10 @@ export default class SortingView extends AbstractView {
   }
 
   _sortTypeChangeHandler(evt) {
-    const sortType = evt.target.dataset.sortType;
-
+    evt.preventDefault();
     this._callback.sortTypeChange(evt.target.dataset.sortType);
   }
-  
+
   get template() {
     return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
         <div class="trip-sort__item  trip-sort__item--day">

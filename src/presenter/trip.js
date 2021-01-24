@@ -42,7 +42,7 @@ export default class TripPresenter {
       .values(this._eventPresenter)
       .forEach((presenter) => presenter.resetView());
   }
-  
+
   _handleSortTypeChange(sortType) {
     if (sortType === this._currentSortType) {
       return;
