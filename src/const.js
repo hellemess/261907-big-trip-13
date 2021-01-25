@@ -95,7 +95,7 @@ export const OPTIONS = [
 ];
 
 export const SortTypes = {
-  DEFAULT: `default`,
+  DATE: `date`,
   PRICE: `price`,
   TIME: `time`
 };

@@ -6,7 +6,7 @@ import NoEventsView from '../view/no-events';
 import {RenderPosition, render} from '../utils/render';
 import RouteView from '../view/route';
 import SortingView from '../view/sorting';
-import {sortPrice, sortTime} from '../utils/trip';
+import {sortDate, sortPrice, sortTime} from '../utils/trip';
 import {SortTypes} from '../const';
 import {updateItem} from '../utils/common';
 
@@ -17,7 +17,7 @@ export default class TripPresenter {
     this._info = new InfoView();
     this._eventsList = new ListView();
     this._sorting = new SortingView();
-    this._currentSortType = SortTypes.DEFAULT;
+    this._currentSortType = SortTypes.DATE;
     this._eventPresenter = {};
     this._handleEventChange = this._handleEventChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
@@ -101,7 +101,7 @@ export default class TripPresenter {
         this._trip.sort(sortTime);
         break;
       default:
-        this._trip = this._originalTrip;
+        this._trip.sort(sortDate);
     }
 
     this._currentSortType = sortType;
@@ -111,7 +111,6 @@ export default class TripPresenter {
 
   init(trip) {
     this._trip = trip.slice();
-    this._originalTrip = this._trip.slice();
     this._renderTrip();
   }
 }

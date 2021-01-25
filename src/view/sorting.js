@@ -15,7 +15,7 @@ export default class SortingView extends AbstractView {
   get template() {
     return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
         <div class="trip-sort__item  trip-sort__item--day">
-          <input id="sort-day" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-day" data-sort-type="${SortTypes.DEFAULT}" checked />
+          <input id="sort-day" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-day" data-sort-type="${SortTypes.DATE}" checked />
           <label class="trip-sort__btn" for="sort-day">Day</label>
         </div>
         <div class="trip-sort__item  trip-sort__item--event">

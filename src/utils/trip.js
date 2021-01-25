@@ -8,6 +8,8 @@ export const formatEventTime = (time) => time.toLocaleString(`en-GB`, {hour: `2-
 
 export const isFutureEvent = (date) => date > new Date();
 
+export const sortDate = (eventA, eventB) => eventA.time.start.getTime() - eventB.time.start.getTime();
+
 export const sortPrice = (eventA, eventB) => eventB.cost - eventA.cost;
 
 export const sortTime = (eventA, eventB) => {
