@@ -1,4 +1,5 @@
 import AbstractView from './abstract';
+import {getOptions} from '../utils/trip';
 
 const getCostTemplate = (events) => {
   let cost = 0;
@@ -6,7 +7,9 @@ const getCostTemplate = (events) => {
   for (let event of events) {
     cost += event.cost;
 
-    for (let option of event.options) {
+    const options = getOptions(event.type);
+
+    for (let option of options) {
       cost += option.cost;
     }
   }

@@ -1,4 +1,4 @@
-import {addZero, formatEventDate, formatEventTime} from '../utils/trip';
+import {addZero, formatEventDate, formatEventTime, getPrep, getOptions} from '../utils/trip';
 import AbstractView from './abstract';
 
 const getTimeTemplate = (time) => {
@@ -35,9 +35,10 @@ const getEventOptionTemplate = (option) => {
 };
 
 const getEventTemplate = (tripEvent) => {
-  const {type, prep, destination, cost, options, time, isFavorite} = tripEvent;
+  const {type, destination, cost, time, isFavorite} = tripEvent;
 
   const timeTemplate = getTimeTemplate(time);
+  const options = getOptions(type);
   const optionsTemplate = options.map((option) => getEventOptionTemplate(option)).join(``);
 
   return `<li class="trip-events__item">
@@ -46,7 +47,7 @@ const getEventTemplate = (tripEvent) => {
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon" />
       </div>
-      <h3 class="event__title">${type} ${prep} ${destination}</h3>
+      <h3 class="event__title">${type} ${getPrep(type)} ${destination}</h3>
       <div class="event__schedule">
         ${timeTemplate}
       </div>
