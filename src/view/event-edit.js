@@ -161,8 +161,7 @@ export default class EventEditView extends SmartView {
     let isDestinationAvailable = false;
 
     for (let destination of availableDestinations) {
-      if (destination.value === evt.target.value)
-      {
+      if (destination.value === evt.target.value) {
         isDestinationAvailable = true;
         break;
       }
@@ -174,7 +173,7 @@ export default class EventEditView extends SmartView {
       }
 
       const destination = evt.target.value;
-      
+
       const info = {
         description: getDescription(),
         photos: getPhotos()
@@ -251,16 +250,16 @@ export default class EventEditView extends SmartView {
 
   static parseEventToData(tripEvent) {
     return Object.assign(
-      {},
-      tripEvent,
-      {
-        prep: getPrep(tripEvent.type),
-        options: getOptions(tripEvent.type),
-        info: {
-          description: getDescription(),
-          photos: getPhotos()
+        {},
+        tripEvent,
+        {
+          prep: getPrep(tripEvent.type),
+          options: getOptions(tripEvent.type),
+          info: {
+            description: getDescription(),
+            photos: getPhotos()
+          }
         }
-      }
     );
   }
 }
