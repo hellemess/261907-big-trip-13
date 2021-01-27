@@ -65,7 +65,6 @@ const getTypeTemplate = (type, isChecked) =>
 const getEventEditTemplate = (tripEvent) => {
   const {type, prep, destination, cost, options, info, time} = tripEvent;
 
-  const {start, finish} = time;
   const transferTypesTemplate = TYPES_TO.map((it) => getTypeTemplate(it, it === type)).join(``);
   const activityTypesTemplate = TYPES_IN.map((it) => getTypeTemplate(it, it === type)).join(``);
   const destinationOptionsTemplate = DESTINATIONS.map((it) => getDestionationOptionTemplate(it)).join(``);
@@ -213,14 +212,14 @@ export default class EventEditView extends SmartView {
     }
 
     this._datepicker = flatpickr(
-      this.element.querySelector(`.event__input--time`),
-      {
-        dateFormat: `d/m/y H:i`,
-        defaultDate: [this._data.time.start, this._data.time.finish],
-        enableTime: true,
-        mode: 'range',
-        onChange: this._dateChangeHandler
-      }
+        this.element.querySelector(`.event__input--time`),
+        {
+          dateFormat: `d/m/y H:i`,
+          defaultDate: [this._data.time.start, this._data.time.finish],
+          enableTime: true,
+          mode: `range`,
+          onChange: this._dateChangeHandler
+        }
     );
   }
 

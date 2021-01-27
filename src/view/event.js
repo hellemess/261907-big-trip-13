@@ -1,17 +1,14 @@
 import {getPrep, getOptions} from '../utils/trip';
 import AbstractView from './abstract';
 import dayjs from 'dayjs';
-
-const duration = require('dayjs/plugin/duration');
+import duration from 'dayjs/plugin/duration';
 
 dayjs.extend(duration);
 
 const getTimeTemplate = (time) => {
   const {start, finish} = time;
 
-  const diff = finish - start;
-
-  const duration = dayjs.duration(finish - start).$d;
+  const eventDuration = dayjs.duration(finish - start).$d;
 
   return `<p class="event__time">
     <time class="event__start-time" datetime="${dayjs(start).format(`YYYY-MM-DD HH:mm:ss`)}">${dayjs(start).format(`HH:mm`)}</time>
@@ -19,9 +16,9 @@ const getTimeTemplate = (time) => {
     <time class="event__end-time" datetime="${dayjs(finish).format(`YYYY-MM-DD HH:mm:ss`)}">${dayjs(finish).format(`HH:mm`)}</time>
   </p>
   <p class="event__duration">
-    ${duration.days ? `${duration.days}D ` : ``}
-    ${duration.hours ? `${`${duration.hours}`.padStart(2, `0`)}H ` : ``}
-    ${duration.minutes ? `${`${duration.minutes}`.padStart(2, `0`)}M` : ``}
+    ${eventDuration.days ? `${eventDuration.days}D ` : ``}
+    ${eventDuration.hours ? `${`${eventDuration.hours}`.padStart(2, `0`)}H ` : ``}
+    ${eventDuration.minutes ? `${`${eventDuration.minutes}`.padStart(2, `0`)}M` : ``}
   </p>`;
 };
 
