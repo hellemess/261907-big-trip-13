@@ -63,7 +63,7 @@ const getTypeTemplate = (type, isChecked) =>
   </div>`;
 
 const getEventEditTemplate = (tripEvent) => {
-  const {type, prep, destination, cost, options, info, time} = tripEvent;
+  const {type, prep, destination, cost, options, info} = tripEvent;
 
   const transferTypesTemplate = TYPES_TO.map((it) => getTypeTemplate(it, it === type)).join(``);
   const activityTypesTemplate = TYPES_IN.map((it) => getTypeTemplate(it, it === type)).join(``);
