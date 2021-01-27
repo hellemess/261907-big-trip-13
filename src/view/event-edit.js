@@ -1,14 +1,12 @@
-import AbstractView from './abstract';
+import SmartView from './smart';
 import {DESTINATIONS, OPTIONS, TYPES_IN, TYPES_TO} from '../const';
-import {formatEventEditTime} from '../utils/trip';
+import {formatEventEditTime, getDescription, getOptions, getPhotos, getPrep} from '../utils/trip';
 
 const BLANK_EVENT = {
   type: `Bus`,
-  prep: `to`,
   destination: ``,
   cost: ``,
   isFavorite: false,
-  options: [],
   info: null,
   time: {
     start: new Date(),
@@ -140,12 +138,15 @@ const getEventEditTemplate = (tripEvent) => {
   </form>`;
 };
 
-export default class EventEditView extends AbstractView {
+export default class EventEditView extends SmartView {
   constructor(tripEvent = BLANK_EVENT) {
     super();
-    this._event = tripEvent;
+    this._data = EventEditView.parseEventToData(tripEvent);
     this._closeClickHandler = this._closeClickHandler.bind(this);
+    this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._transferTypeChangeHandler = this._transferTypeChangeHandler.bind(this);
+    this._setInnerHandlers();
   }
 
   _closeClickHandler(evt) {
@@ -153,13 +154,66 @@ export default class EventEditView extends AbstractView {
     this._callback.closeClick();
   }
 
+  _destinationChangeHandler(evt) {
+    evt.preventDefault();
+
+    const availableDestinations = this.element.querySelectorAll(`#destination-list-1 option`);
+    let isDestinationAvailable = false;
+
+    for (let destination of availableDestinations) {
+      if (destination.value === evt.target.value) {
+        isDestinationAvailable = true;
+        break;
+      }
+    }
+
+    if (isDestinationAvailable) {
+      if (evt.target.value === this._data.destination) {
+        return;
+      }
+
+      const destination = evt.target.value;
+
+      const info = {
+        description: getDescription(),
+        photos: getPhotos()
+      };
+
+      this.updateData({
+        destination,
+        info
+      });
+    } else {
+      this.element.querySelector(`.event__save-btn`).disabled = true;
+    }
+  }
+
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(this._event);
+    this._callback.formSubmit(EventEditView.parseDataToEvent(this._data));
+  }
+
+  _setInnerHandlers() {
+    this.element.querySelector(`.event__type-list`).addEventListener(`change`, this._transferTypeChangeHandler);
+    this.element.querySelector(`.event__field-group--destination`).addEventListener(`input`, this._destinationChangeHandler);
+  }
+
+  _transferTypeChangeHandler(evt) {
+    evt.preventDefault();
+
+    const type = evt.target.nextElementSibling.innerHTML;
+    const prep = getPrep(type);
+    const options = getOptions(type);
+
+    this.updateData({
+      type,
+      prep,
+      options
+    });
   }
 
   get template() {
-    return getEventEditTemplate(this._event);
+    return getEventEditTemplate(this._data);
   }
 
   set closeClickHandler(callback) {
@@ -170,5 +224,42 @@ export default class EventEditView extends AbstractView {
   set formSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.element.addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  reset(tripEvent) {
+    this.updateData(
+        EventEditView.parseEventToData(tripEvent)
+    );
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.element.querySelector(`.event__rollup-btn`).addEventListener(`click`, this._closeClickHandler);
+    this.element.addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  static parseDataToEvent(data) {
+    const tripEvent = data;
+
+    delete tripEvent.prep;
+    delete tripEvent.options;
+    delete tripEvent.info;
+
+    return tripEvent;
+  }
+
+  static parseEventToData(tripEvent) {
+    return Object.assign(
+        {},
+        tripEvent,
+        {
+          prep: getPrep(tripEvent.type),
+          options: getOptions(tripEvent.type),
+          info: {
+            description: getDescription(),
+            photos: getPhotos()
+          }
+        }
+    );
   }
 }

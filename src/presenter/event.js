@@ -25,6 +25,7 @@ export default class EventPresenter {
   }
 
   _handleCloseClick() {
+    this._eventEdit.reset(this._event);
     this._switchFormToEvent();
   }
 
@@ -52,6 +53,7 @@ export default class EventPresenter {
   _onEscKeyDown(evt) {
     if (evt.keyCode === KeyCodes.ESC) {
       evt.preventDefault();
+      this._eventEdit.reset(this._event);
       this._switchFormToEvent();
     }
   }
