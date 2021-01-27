@@ -1,26 +1,27 @@
-import {addZero, formatEventDate, formatEventTime, getPrep, getOptions} from '../utils/trip';
+import {getPrep, getOptions} from '../utils/trip';
 import AbstractView from './abstract';
+import dayjs from 'dayjs';
+
+const duration = require('dayjs/plugin/duration');
+
+dayjs.extend(duration);
 
 const getTimeTemplate = (time) => {
   const {start, finish} = time;
 
   const diff = finish - start;
 
-  const duration = {
-    days: Math.floor(diff / 1000 / 60 / 60 / 24),
-    hours: Math.floor(diff / 1000 / 60 / 60 % 24),
-    minutes: Math.floor(diff / 1000 / 60 % 60)
-  };
+  const duration = dayjs.duration(finish - start).$d;
 
   return `<p class="event__time">
-    <time class="event__start-time" datetime="${start.toISOString()}">${formatEventTime(start)}</time>
+    <time class="event__start-time" datetime="${dayjs(start).format(`YYYY-MM-DD HH:mm:ss`)}">${dayjs(start).format(`HH:mm`)}</time>
     &mdash;
-    <time class="event__end-time" datetime="${finish.toISOString()}">${formatEventTime(finish)}</time>
+    <time class="event__end-time" datetime="${dayjs(finish).format(`YYYY-MM-DD HH:mm:ss`)}">${dayjs(finish).format(`HH:mm`)}</time>
   </p>
   <p class="event__duration">
-    ${duration.days > 0 ? `${addZero(duration.days)}D ` : ``}
-    ${duration.hours > 0 ? `${addZero(duration.hours)}H ` : ``}
-    ${duration.minutes > 0 ? `${addZero(duration.minutes)}M` : ``}
+    ${duration.days ? `${duration.days}D ` : ``}
+    ${duration.hours ? `${`${duration.hours}`.padStart(2, `0`)}H ` : ``}
+    ${duration.minutes ? `${`${duration.minutes}`.padStart(2, `0`)}M` : ``}
   </p>`;
 };
 
@@ -43,7 +44,7 @@ const getEventTemplate = (tripEvent) => {
 
   return `<li class="trip-events__item">
     <div class="event">
-      <time class="event__date" datetime="${time.start.toISOString()}">${formatEventDate(time)}</time>
+      <time class="event__date" datetime="${dayjs(time.start).format(`YYYY-MM-DD HH:mm:ss`)}">${dayjs(time.start).format(`MMM D`)}</time>
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon" />
       </div>

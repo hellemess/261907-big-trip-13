@@ -12,14 +12,6 @@ const descriptionSentences = [
   `Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.`
 ];
 
-export const addZero = (number) => number < 10 ? `0${number}` : number;
-
-export const formatEventDate = (time) => time.start.toLocaleString(`en-GB`, {month: `short`}) + ` ` + time.start.toLocaleString(`en-GB`, {day: `numeric`});
-
-export const formatEventEditTime = (time) => time.toLocaleString(`en-GB`).replace(`,`, ``).replace(/:\d{2}$/, ``);
-
-export const formatEventTime = (time) => time.toLocaleString(`en-GB`, {hour: `2-digit`, minute: `2-digit`});
-
 export const getDescription = () => {
   const randomSentencesCount = getRandomInteger(0, descriptionSentences.length);
 
