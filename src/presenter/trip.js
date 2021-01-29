@@ -1,8 +1,8 @@
 import CostView from '../view/cost';
-import EventPresenter from './event';
+import PointPresenter from './point';
 import InfoView from '../view/info';
 import ListView from '../view/list';
-import NoEventsView from '../view/no-events';
+import NoPointsView from '../view/no-points';
 import {RenderPosition, render} from '../utils/render';
 import RouteView from '../view/route';
 import SortingView from '../view/sorting';
@@ -11,35 +11,40 @@ import {SortTypes} from '../const';
 import {updateItem} from '../utils/common';
 
 export default class TripPresenter {
-  constructor(header, container) {
+  constructor(header, container, pointsModel) {
+    this._pointsModel = pointsModel;
     this._header = header;
     this._container = container;
     this._info = new InfoView();
-    this._eventsList = new ListView();
+    this._pointsList = new ListView();
     this._sorting = new SortingView();
     this._currentSortType = SortTypes.DATE;
-    this._eventPresenter = {};
-    this._handleEventChange = this._handleEventChange.bind(this);
+    this._pointPresenter = {};
+    this._handlePointChange = this._handlePointChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
   _clearList() {
     Object
-      .values(this._eventPresenter)
+      .values(this._pointPresenter)
       .forEach((presenter) => presenter.destroy());
 
-    this._eventPresenter = {};
+    this._pointPresenter = {};
   }
 
-  _handleEventChange(updatedEvent) {
-    this._trip = updateItem(this._trip, updatedEvent);
-    this._eventPresenter[updatedEvent.id].init(updatedEvent);
+  _getPoints() {
+    return this._pointsModel.points;
+  }
+
+  _handlePointChange(updatedPoint) {
+    this._trip = updateItem(this._trip, updatedPoint);
+    this._pointPresenter[updatedPoint.id].init(updatedPoint);
   }
 
   _handleModeChange() {
     Object
-      .values(this._eventPresenter)
+      .values(this._pointPresenter)
       .forEach((presenter) => presenter.resetView());
   }
 
@@ -48,28 +53,28 @@ export default class TripPresenter {
       return;
     }
 
-    this._sortEvents(sortType);
+    this._sortPoints(sortType);
   }
 
   _renderCost() {
     render(this._info, new CostView(this._trip), RenderPosition.BEFOREEND);
   }
 
-  _renderEvent(tripEvent) {
-    const eventPresenter = new EventPresenter(this._eventsList, this._handleEventChange, this._handleModeChange);
+  _renderPoint(tripPoint) {
+    const pointPresenter = new PointPresenter(this._pointsList, this._handlePointChange, this._handleModeChange);
 
-    eventPresenter.init(tripEvent);
-    this._eventPresenter[tripEvent.id] = eventPresenter;
+    pointPresenter.init(tripPoint);
+    this._pointPresenter[tripPoint.id] = pointPresenter;
   }
 
   _renderList() {
     this._renderSorting();
-    render(this._container, this._eventsList, RenderPosition.BEFOREEND);
-    this._trip.forEach((tripEvent) => this._renderEvent(tripEvent));
+    render(this._container, this._pointsList, RenderPosition.BEFOREEND);
+    this._trip.forEach((tripPoint) => this._renderPoint(tripPoint));
   }
 
-  _renderNoEvents() {
-    render(this._container, new NoEventsView(), RenderPosition.BEFOREEND);
+  _renderNoPoints() {
+    render(this._container, new NoPointsView(), RenderPosition.BEFOREEND);
   }
 
   _renderRoute() {
@@ -83,7 +88,7 @@ export default class TripPresenter {
 
   _renderTrip() {
     if (this._trip.length === 0) {
-      this._renderNoEvents();
+      this._renderNoPoints();
     } else {
       render(this._header, this._info, RenderPosition.AFTERBEGIN);
       this._renderRoute();
@@ -92,7 +97,7 @@ export default class TripPresenter {
     }
   }
 
-  _sortEvents(sortType) {
+  _sortPoints(sortType) {
     switch (sortType) {
       case SortTypes.PRICE:
         this._trip.sort(sortPrice);

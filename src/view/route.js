@@ -1,18 +1,18 @@
 import AbstractView from './abstract';
 
-const getRouteTemplate = (events) => {
+const getRouteTemplate = (points) => {
   const places = [];
 
-  for (let tripEvent of events) {
-    if (tripEvent.destination !== places[places.length - 1]) {
-      places.push(tripEvent.destination);
+  for (let point of points) {
+    if (point.destination !== places[places.length - 1]) {
+      places.push(point.destination);
     }
   }
 
-  const startMonth = events[0].time.start.toLocaleString(`en-GB`, {month: `short`});
-  const startDate = events[0].time.start.getDate();
-  const finishMonth = events[events.length - 1].time.start.toLocaleString(`en-GB`, {month: `short`});
-  const finishDate = events[events.length - 1].time.start.getDate();
+  const startMonth = points[0].time.start.toLocaleString(`en-GB`, {month: `short`});
+  const startDate = points[0].time.start.getDate();
+  const finishMonth = points[points.length - 1].time.start.toLocaleString(`en-GB`, {month: `short`});
+  const finishDate = points[points.length - 1].time.start.getDate();
 
   return `<div class="trip-info__main">
     <h1 class="trip-info__title">${places.join(` &mdash; `)}</h1>
@@ -26,12 +26,12 @@ const getRouteTemplate = (events) => {
 };
 
 export default class RouteView extends AbstractView {
-  constructor(events) {
+  constructor(points) {
     super();
-    this._events = events;
+    this._points = points;
   }
 
   get template() {
-    return getRouteTemplate(this._events);
+    return getRouteTemplate(this._points);
   }
 }

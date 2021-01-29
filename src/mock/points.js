@@ -19,7 +19,7 @@ const generateTripStartTime = () => {
   return currentDate;
 };
 
-const generateEvent = () => {
+const generatePoint = () => {
   const type = getRandomArrayValue(types);
 
   return {
@@ -31,15 +31,15 @@ const generateEvent = () => {
   };
 };
 
-export const generateTrip = (eventsCount) => {
-  const events = new Array(eventsCount).fill().map(generateEvent);
+export const generatePoints = (pointsCount) => {
+  const points = new Array(pointsCount).fill().map(generatePoint);
   let start = generateTripStartTime();
 
-  for (let tripEvent of events) {
-    const eventTime = getRandomInteger(MIN_EVENT_TIME, MAX_EVENT_TIME);
-    const finish = new Date(start.getTime() + eventTime);
+  for (let point of points) {
+    const pointTime = getRandomInteger(MIN_EVENT_TIME, MAX_EVENT_TIME);
+    const finish = new Date(start.getTime() + pointTime);
 
-    tripEvent.time = {
+    point.time = {
       start,
       finish
     };
@@ -47,5 +47,5 @@ export const generateTrip = (eventsCount) => {
     start = finish;
   }
 
-  return events;
+  return points;
 };

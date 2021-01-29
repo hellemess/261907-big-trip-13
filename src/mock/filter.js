@@ -1,15 +1,15 @@
-import {isFutureEvent} from '../utils/trip';
+import {isFuturePoint} from '../utils/trip';
 
-const eventsToFilterMap = {
-  everything: (events) => events.length,
-  future: (events) => events.filter((tripEvent) => isFutureEvent(tripEvent.time.start)).length,
-  past: (events) => events.filter((tripEvent) => !isFutureEvent(tripEvent.time.start)).length
+const pointsToFilterMap = {
+  everything: (points) => points.length,
+  future: (points) => points.filter((point) => isFuturePoint(point.time.start)).length,
+  past: (points) => points.filter((point) => !isFuturePoint(point.time.start)).length
 };
 
-export const generateFilter = (events) =>
-  Object.entries(eventsToFilterMap).map(([name, countEvents]) => {
+export const generateFilter = (points) =>
+  Object.entries(pointsToFilterMap).map(([name, countPoints]) => {
     return {
       name,
-      count: countEvents(events)
+      count: countPoints(points)
     };
   });
