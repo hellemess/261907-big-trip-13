@@ -16,7 +16,7 @@ const getTimeTemplate = (time) => {
     <time class="event__end-time" datetime="${dayjs(finish).format(`YYYY-MM-DD HH:mm:ss`)}">${dayjs(finish).format(`HH:mm`)}</time>
   </p>
   <p class="event__duration">
-    ${eventDuration.days ? `${eventDuration.days}D ` : ``}
+    ${dayjs(finish).diff(dayjs(start), `days`) ? `${dayjs(finish).diff(dayjs(start), `days`)}D ` : ``}
     ${eventDuration.hours ? `${`${eventDuration.hours}`.padStart(2, `0`)}H ` : ``}
     ${eventDuration.minutes ? `${`${eventDuration.minutes}`.padStart(2, `0`)}M` : ``}
   </p>`;

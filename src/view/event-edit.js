@@ -42,13 +42,13 @@ const getDescriptionTemplate = (info) => {
 
 const getDestionationOptionTemplate = (destination) => `<option value="${destination}"></option>`;
 
-const getOptionsItemTemplate = (option, checkedOptions) => {
+const getOptionsItemTemplate = (option, checkedOptions, eventID) => {
   const {alias, title, cost} = option;
   const isChecked = checkedOptions.some((it) => it.alias === alias);
 
   return `<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${alias}-1" type="checkbox" name="event-offer-${alias}" ${isChecked ? `checked` : ``} />
-    <label class="event__offer-label" for="event-offer-${alias}-1">
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${alias}-${eventID}" type="checkbox" name="event-offer-${alias}" ${isChecked ? `checked` : ``} />
+    <label class="event__offer-label" for="event-offer-${alias}-${eventID}">
       <span class="event__offer-title">${title}</span>
       &plus;
       &euro;&nbsp;<span class="event__offer-price">${cost}</span>
@@ -56,31 +56,31 @@ const getOptionsItemTemplate = (option, checkedOptions) => {
   </div>`;
 };
 
-const getTypeTemplate = (type, isChecked) =>
+const getTypeTemplate = (type, isChecked, eventID) =>
   `<div class="event__type-item">
-    <input id="event-type-${type.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type.toLowerCase()}" ${isChecked ? `checked` : ``} />
-    <label class="event__type-label  event__type-label--${type.toLowerCase()}" for="event-type-${type.toLowerCase()}-1">${type}</label>
+    <input id="event-type-${type.toLowerCase()}-${eventID}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type.toLowerCase()}" ${isChecked ? `checked` : ``} />
+    <label class="event__type-label  event__type-label--${type.toLowerCase()}" for="event-type-${type.toLowerCase()}-${eventID}">${type}</label>
   </div>`;
 
 const getEventEditTemplate = (tripEvent) => {
-  const {type, prep, destination, cost, options, info} = tripEvent;
+  const {eventID, type, prep, destination, cost, options, info} = tripEvent;
 
-  const transferTypesTemplate = TYPES_TO.map((it) => getTypeTemplate(it, it === type)).join(``);
-  const activityTypesTemplate = TYPES_IN.map((it) => getTypeTemplate(it, it === type)).join(``);
+  const transferTypesTemplate = TYPES_TO.map((it) => getTypeTemplate(it, it === type, eventID)).join(``);
+  const activityTypesTemplate = TYPES_IN.map((it) => getTypeTemplate(it, it === type, eventID)).join(``);
   const destinationOptionsTemplate = DESTINATIONS.map((it) => getDestionationOptionTemplate(it)).join(``);
   const isNew = destination === `` ? true : false;
   const availableOptions = OPTIONS.filter((option) => option.forTypes.indexOf(type) >= 0);
-  const optionsTemplate = availableOptions.length > 0 ? availableOptions.map((it) => getOptionsItemTemplate(it, options)).join(``) : false;
+  const optionsTemplate = availableOptions.length > 0 ? availableOptions.map((it) => getOptionsItemTemplate(it, options, eventID)).join(``) : false;
   const descriptionTemplate = getDescriptionTemplate(info);
 
   return `<form class="trip-events__item  event  event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
-        <label class="event__type  event__type-btn" for="event-type-toggle-1">
+        <label class="event__type  event__type-btn" for="event-type-toggle-${eventID}">
           <span class="visually-hidden">Choose event type</span>
           <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon" />
         </label>
-        <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" />
+        <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${eventID}" type="checkbox" />
         <div class="event__type-list">
           <fieldset class="event__type-group">
             <legend class="visually-hidden">Transfer</legend>
@@ -93,22 +93,25 @@ const getEventEditTemplate = (tripEvent) => {
         </div>
       </div>
       <div class="event__field-group  event__field-group--destination">
-        <label class="event__label  event__type-output" for="event-destination-1">${type} ${prep}</label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" list="destination-list-1" />
-        <datalist id="destination-list-1">
+        <label class="event__label  event__type-output" for="event-destination-${eventID}">${type} ${prep}</label>
+        <input class="event__input  event__input--destination" id="event-destination-${eventID}" type="text" name="event-destination" value="${destination}" list="destination-list-${eventID}" />
+        <datalist id="destination-list-${eventID}">
           ${destinationOptionsTemplate}
         </datalist>
       </div>
       <div class="event__field-group  event__field-group--time">
-        <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="" />
+        <label class="visually-hidden" for="event-start-time-${eventID}">From</label>
+        <input class="event__input  event__input--time" id="event-start-time-${eventID}" type="text" name="event-start-time" value="" />
+        &mdash;
+        <label class="visually-hidden" for="event-end-time-${eventID}">To</label>
+        <input class="event__input  event__input--time" id="event-end-time-${eventID}" type="text" name="event-end-time" value="" />
       </div>
       <div class="event__field-group  event__field-group--price">
-        <label class="event__label" for="event-price-1">
+        <label class="event__label" for="event-price-${eventID}">
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${cost}" />
+        <input class="event__input  event__input--price" id="event-price-${eventID}" type="text" name="event-price" value="${cost}" />
       </div>
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
       <button class="event__reset-btn" type="reset">${isNew ? `Cancel` : `Delete`}</button>
@@ -140,13 +143,13 @@ export default class EventEditView extends SmartView {
   constructor(tripEvent = BLANK_EVENT) {
     super();
     this._data = EventEditView.parseEventToData(tripEvent);
-    this._datepicker = null;
+    this._datepickers = {};
     this._closeClickHandler = this._closeClickHandler.bind(this);
     this._dateChangeHandler = this._dateChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._transferTypeChangeHandler = this._transferTypeChangeHandler.bind(this);
-    this._setDatepicker();
+    this._setDatepickers();
     this._setInnerHandlers();
   }
 
@@ -155,21 +158,24 @@ export default class EventEditView extends SmartView {
     this._callback.closeClick();
   }
 
-  _dateChangeHandler(dates) {
+  _dateChangeHandler(userDate, dateString, instance) {
+    const start = instance.element.name === `event-start-time` ? userDate[0] : this._data.time.start;
+    const finish = instance.element.name === `event-end-time` ? userDate[0] : this._data.time.finish;
+
     this.updateData({
       time: {
-        start: dates[0],
-        finish: dates[1]
+        start,
+        finish
       }
-    });
+    }, true);
 
-    this.element.querySelector(`.event__save-btn`).disabled = !dates[1] || dates[0] >= dates[1];
+    this.element.querySelector(`.event__save-btn`).disabled = start >= finish;
   }
 
   _destinationChangeHandler(evt) {
     evt.preventDefault();
 
-    const availableDestinations = this.element.querySelectorAll(`#destination-list-1 option`);
+    const availableDestinations = this.element.querySelectorAll(`[id*="destination-list"] option`);
     let isDestinationAvailable = false;
 
     for (let destination of availableDestinations) {
@@ -205,22 +211,30 @@ export default class EventEditView extends SmartView {
     this._callback.formSubmit(EventEditView.parseDataToEvent(this._data));
   }
 
-  _setDatepicker() {
-    if (this._datepicker) {
-      this._datepicker.destroy();
-      this._datepicker = null;
-    }
-
-    this._datepicker = flatpickr(
-        this.element.querySelector(`.event__input--time`),
+  _setDatepicker(selector, defaultDate) {
+    return flatpickr(
+        this.element.querySelector(selector),
         {
           dateFormat: `d/m/y H:i`,
-          defaultDate: [this._data.time.start, this._data.time.finish],
+          defaultDate,
           enableTime: true,
-          mode: `range`,
           onChange: this._dateChangeHandler
         }
     );
+  }
+
+  _setDatepickers() {
+    if (Object.keys(this._datepickers).length) {
+      for (let datepicker in this._datepickers)
+      {
+        datepicker.destroy();
+      }
+
+      this._datepickers = {};
+    }
+
+    this._datepickers.start = this._setDatepicker(`[name="event-start-time"]`, this._data.time.start);
+    this._datepickers.finish = this._setDatepicker(`[name="event-end-time"]`, this._data.time.finish);
   }
 
   _setInnerHandlers() {
