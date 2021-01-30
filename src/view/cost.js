@@ -10,7 +10,7 @@ const getCostTemplate = (points) => {
     const options = getOptions(point.type);
 
     for (let option of options) {
-      cost += option.cost;
+      cost += +option.cost;
     }
   }
 

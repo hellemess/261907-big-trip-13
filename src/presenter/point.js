@@ -3,6 +3,7 @@ import PointEditView from '../view/point-edit';
 import PointView from '../view/point';
 import {KeyCodes} from '../utils/common';
 import {RenderPosition, remove, render, replace} from '../utils/render';
+import {UserAction, UpdateType} from "../const.js";
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -18,6 +19,7 @@ export default class PointPresenter {
     this._pointItem = null;
     this._pointEdit = null;
     this._handleCloseClick = this._handleCloseClick.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleOpenClick = this._handleOpenClick.bind(this);
@@ -29,8 +31,18 @@ export default class PointPresenter {
     this._switchFormToPoint();
   }
 
+  _handleDeleteClick(point) {
+    this._changeData(
+        UserAction.DELETE_POINT,
+        UpdateType.MINOR,
+        point
+    );
+  }
+
   _handleFavoriteClick() {
     this._changeData(
+        UserAction.UPDATE_POINT,
+        UpdateType.PATCH,
         Object.assign(
             {},
             this._point,
@@ -42,7 +54,12 @@ export default class PointPresenter {
   }
 
   _handleFormSubmit(point) {
-    this._changeData(point);
+    this._changeData(
+        UserAction.UPDATE_POINT,
+        UpdateType.MINOR,
+        point
+    );
+
     this._switchFormToPoint();
   }
 
@@ -87,6 +104,7 @@ export default class PointPresenter {
     this._pointItem.favoriteClickHandler = this._handleFavoriteClick;
     this._pointItem.openClickHandler = this._handleOpenClick;
     this._pointEdit.closeClickHandler = this._handleCloseClick;
+    this._pointEdit.deleteClickHandler = this._handleDeleteClick;
     this._pointEdit.formSubmitHandler = this._handleFormSubmit;
 
     if (prevPointItem === null || prevPointEdit === null) {

@@ -131,7 +131,7 @@ const getPointEditTemplate = (point) => {
         </div>
       </section>`
     : ``}
-      ${descriptionTemplate
+      ${descriptionTemplate && !isNew
     ? `${descriptionTemplate}`
     : ``}
       </section>`
@@ -145,7 +145,9 @@ export default class PointEditView extends SmartView {
     this._data = PointEditView.parsePointToData(point);
     this._datepickers = {};
     this._closeClickHandler = this._closeClickHandler.bind(this);
+    this._costChangeHandler = this._costChangeHandler.bind(this);
     this._dateChangeHandler = this._dateChangeHandler.bind(this);
+    this._deleteClickHandler = this._deleteClickHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._transferTypeChangeHandler = this._transferTypeChangeHandler.bind(this);
@@ -156,6 +158,19 @@ export default class PointEditView extends SmartView {
   _closeClickHandler(evt) {
     evt.preventDefault();
     this._callback.closeClick();
+  }
+
+  _costChangeHandler(evt) {
+    this.updateData({
+      cost: evt.target.value
+    }, true);
+
+    this.element.querySelector(`.event__save-btn`).disabled = !/^[0-9]*$/.test(evt.target.value);
+  };
+
+  _deleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(PointEditView.parseDataToPoint(this._data));
   }
 
   _dateChangeHandler(userDate, dateString, instance) {
@@ -206,6 +221,18 @@ export default class PointEditView extends SmartView {
     }
   }
 
+  _destroyDatepickers() {
+    if (Object.keys(this._datepickers).length)
+    {
+      for (let datepicker in this._datepickers)
+      {
+        this._datepickers[datepicker].destroy();
+      }
+
+      this._datepickers = {};
+    }
+  }
+
   _formSubmitHandler(evt) {
     evt.preventDefault();
     this._callback.formSubmit(PointEditView.parseDataToPoint(this._data));
@@ -224,6 +251,7 @@ export default class PointEditView extends SmartView {
   }
 
   _setDatepickers() {
+    this._destroyDatepickers();
     this._datepickers.start = this._setDatepicker(`[name="event-start-time"]`, this._data.time.start);
     this._datepickers.finish = this._setDatepicker(`[name="event-end-time"]`, this._data.time.finish);
   }
@@ -231,6 +259,7 @@ export default class PointEditView extends SmartView {
   _setInnerHandlers() {
     this.element.querySelector(`.event__type-list`).addEventListener(`change`, this._transferTypeChangeHandler);
     this.element.querySelector(`.event__field-group--destination`).addEventListener(`input`, this._destinationChangeHandler);
+    this.element.querySelector(`.event__input--price`).addEventListener(`input`, this._costChangeHandler);
   }
 
   _transferTypeChangeHandler(evt) {
@@ -253,12 +282,28 @@ export default class PointEditView extends SmartView {
 
   set closeClickHandler(callback) {
     this._callback.closeClick = callback;
-    this.element.querySelector(`.event__rollup-btn`).addEventListener(`click`, this._closeClickHandler);
+
+    if (this.element.querySelector(`.event__rollup-btn`)) {
+      this.element.querySelector(`.event__rollup-btn`).addEventListener(`click`, this._closeClickHandler);
+    }
+  }
+
+  set deleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+
+    if (this.element.querySelector(`.event__reset-btn`)) {
+      this.element.querySelector(`.event__reset-btn`).addEventListener(`click`, this._deleteClickHandler);
+    }
   }
 
   set formSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.element.addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  removeElement() {
+    super.removeElement();
+    this._destroyDatepickers();
   }
 
   reset(point) {
@@ -268,11 +313,17 @@ export default class PointEditView extends SmartView {
   }
 
   restoreHandlers() {
-    console.log( this._data );
     this._setDatepickers();
     this._setInnerHandlers();
-    this.element.querySelector(`.event__rollup-btn`).addEventListener(`click`, this._closeClickHandler);
     this.element.addEventListener(`submit`, this._formSubmitHandler);
+
+    if (this.element.querySelector(`.event__rollup-btn`)) {
+      this.element.querySelector(`.event__rollup-btn`).addEventListener(`click`, this._closeClickHandler);
+    }
+
+    if (this.element.querySelector(`.event__reset-btn`)) {
+      this.element.querySelector(`.event__reset-btn`).addEventListener(`click`, this._deleteClickHandler);
+    }
   }
 
   static parseDataToPoint(data) {

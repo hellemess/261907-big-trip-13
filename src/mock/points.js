@@ -7,8 +7,6 @@ const MAX_EVENT_TIME = 4 * 60 * 60 * 1000;
 
 const types = [...TYPES_IN, ...TYPES_TO];
 
-const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
-
 const generateTripStartTime = () => {
   const daysGap = getRandomInteger(-MAX_DAYS_GAP, MAX_DAYS_GAP);
   const currentDate = new Date();
@@ -30,6 +28,8 @@ const generatePoint = () => {
     isFavorite: getRandomInteger(0, 1),
   };
 };
+
+export const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
 
 export const generatePoints = (pointsCount) => {
   const points = new Array(pointsCount).fill().map(generatePoint);

@@ -18,6 +18,10 @@ export const createElement = (template) => {
 const getElement = (element) => element instanceof AbstractView ? element.element : element;
 
 export const remove = (component) => {
+  if (component === null) {
+    return;
+  }
+
   const isComponent = component instanceof AbstractView;
 
   if (!isComponent) {
