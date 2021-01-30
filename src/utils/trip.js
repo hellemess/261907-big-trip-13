@@ -1,5 +1,4 @@
 import {TYPES_IN} from '../const';
-import {getRandomInteger} from './common';
 
 export const areDatesValid = (startDate, finishDate) => startDate < finishDate;
 

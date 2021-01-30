@@ -1,7 +1,7 @@
 import AbstractView from './abstract';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-import {getPrep, getOptions} from '../utils/trip';
+import {getPrep} from '../utils/trip';
 
 dayjs.extend(duration);
 
