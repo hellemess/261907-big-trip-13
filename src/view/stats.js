@@ -103,7 +103,7 @@ const renderTimeChart = (timeCtx, points, types) => {
   const formatter = (value) => {
     const typeDuration = dayjs.duration(value).$d;
 
-   return `${typeDuration.days ? `${typeDuration.days}D ` : ``}${typeDuration.hours ? `${`${typeDuration.hours}`.padStart(2, `0`)}H ` : ``}${typeDuration.minutes ? `${`${typeDuration.minutes}`.padStart(2, `0`)}M` : ``}`;
+    return `${typeDuration.days ? `${typeDuration.days}D ` : ``}${typeDuration.hours ? `${`${typeDuration.hours}`.padStart(2, `0`)}H ` : ``}${typeDuration.minutes ? `${`${typeDuration.minutes}`.padStart(2, `0`)}M` : ``}`;
   };
 
   renderChart(timeCtx, types, values, formatter, `TIME`);
