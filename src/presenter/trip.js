@@ -48,7 +48,9 @@ export default class TripPresenter {
 
     if (resetHeader) {
       remove(this._route);
+      this._route = null;
       remove(this._cost);
+      this._cost = null;
     }
 
     if (resetSortType) {
