@@ -1,5 +1,4 @@
 import AbstractView from './abstract';
-import {getOptions} from '../utils/trip';
 
 const getCostTemplate = (points) => {
   let cost = 0;

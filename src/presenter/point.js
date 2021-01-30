@@ -99,7 +99,7 @@ export default class PointPresenter {
     const prevPointItem = this._pointItem;
     const prevPointEdit = this._pointEdit;
 
-    this._pointItem = new PointView(point, offers);
+    this._pointItem = new PointView(point);
     this._pointEdit = new PointEditView(destinations, offers, point);
     this._pointItem.favoriteClickHandler = this._handleFavoriteClick;
     this._pointItem.openClickHandler = this._handleOpenClick;

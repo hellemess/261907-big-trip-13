@@ -32,7 +32,7 @@ const getPointOptionTemplate = (option) => {
   </li>`;
 };
 
-const getPointTemplate = (point, offers) => {
+const getPointTemplate = (point) => {
   const {type, destination, cost, time, isFavorite, options} = point;
 
   const timeTemplate = getTimeTemplate(time);
@@ -69,10 +69,9 @@ const getPointTemplate = (point, offers) => {
 };
 
 export default class PointView extends AbstractView {
-  constructor(point, offers) {
+  constructor(point) {
     super();
     this._point = point;
-    this._offers = offers;
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._openClickHandler = this._openClickHandler.bind(this);
   }
@@ -88,7 +87,7 @@ export default class PointView extends AbstractView {
   }
 
   get template() {
-    return getPointTemplate(this._point, this._offers);
+    return getPointTemplate(this._point);
   }
 
   set favoriteClickHandler(callback) {

@@ -1,4 +1,4 @@
-import { UpdateType } from "../const.js";
+import {UpdateType} from "../const.js";
 import Observer from "../utils/observer.js";
 
 export default class PointsModel extends Observer {
@@ -36,7 +36,7 @@ export default class PointsModel extends Observer {
   }
 
   loadInfo(updateType) {
-    this._notify(UpdateType);
+    this._notify(updateType);
   }
 
   setPoints(updateType, points) {
@@ -62,23 +62,23 @@ export default class PointsModel extends Observer {
 
   static adaptToClient(point) {
     const adaptedPoint = Object.assign(
-      {},
-      point,
-      {
-        cost: point.base_price,
-        destination: point.destination.name,
-        info: {
-          description: point.destination.description,
-          photos: point.destination.pictures
-        },
-        isFavorite: point.is_favorite,
-        time: {
-          start: new Date(point.date_from),
-          finish: new Date(point.date_to)
-        },
-        type: point.type[0].toUpperCase() + point.type.slice(1),
-        options: point.offers
-      }
+        {},
+        point,
+        {
+          cost: point.base_price,
+          destination: point.destination.name,
+          info: {
+            description: point.destination.description,
+            photos: point.destination.pictures
+          },
+          isFavorite: point.is_favorite,
+          time: {
+            start: new Date(point.date_from),
+            finish: new Date(point.date_to)
+          },
+          type: point.type[0].toUpperCase() + point.type.slice(1),
+          options: point.offers
+        }
     );
 
     delete adaptedPoint.base_price;
@@ -92,21 +92,21 @@ export default class PointsModel extends Observer {
 
   static adaptToServer(point) {
     const adaptedPoint = Object.assign(
-      {},
-      point,
-      {
-        base_price: point.cost,
-        date_from: point.time.start.toISOString(),
-        date_to: point.time.finish.toISOString(),
-        is_favorite: point.isFavorite,
-        destination: {
-          description: point.info.description,
-          name: point.destination,
-          pictures: point.info.photos
-        },
-        type: point.type.toLowerCase(),
-        offers: point.options
-      }
+        {},
+        point,
+        {
+          [`base_price`]: point.cost,
+          [`date_from`]: point.time.start.toISOString(),
+          [`date_to`]: point.time.finish.toISOString(),
+          [`is_favorite`]: point.isFavorite,
+          destination: {
+            description: point.info.description,
+            name: point.destination,
+            pictures: point.info.photos
+          },
+          type: point.type.toLowerCase(),
+          offers: point.options
+        }
     );
 
     delete adaptedPoint.cost;

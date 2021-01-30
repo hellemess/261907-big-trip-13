@@ -1,8 +1,8 @@
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import dayjs from 'dayjs';
-import {DESTINATIONS, OPTIONS, TYPES_IN, TYPES_TO} from '../const';
+import {TYPES_IN, TYPES_TO} from '../const';
 import flatpickr from 'flatpickr';
-import {getDescription, getOptions, getPhotos, getPrep, isDestinationValid, isFormValid} from '../utils/trip';
+import {getPrep, isDestinationValid, isFormValid} from '../utils/trip';
 import SmartView from './smart';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
@@ -284,7 +284,7 @@ export default class PointEditView extends SmartView {
 
     const type = evt.target.nextElementSibling.innerHTML;
     const prep = getPrep(type);
-    const options =[];
+    const options = [];
 
     this.updateData({
       type,
