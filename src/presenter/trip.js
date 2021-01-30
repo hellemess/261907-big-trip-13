@@ -173,7 +173,7 @@ export default class TripPresenter {
       this._renderList(points);
     }
   }
-  
+
   createPoint() {
     this._currentSortType = SortTypes.DATE;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);

@@ -166,7 +166,7 @@ export default class PointEditView extends SmartView {
     }, true);
 
     this.element.querySelector(`.event__save-btn`).disabled = !/^[0-9]*$/.test(evt.target.value);
-  };
+  }
 
   _deleteClickHandler(evt) {
     evt.preventDefault();
@@ -222,13 +222,9 @@ export default class PointEditView extends SmartView {
   }
 
   _destroyDatepickers() {
-    if (Object.keys(this._datepickers).length)
-    {
-      for (let datepicker in this._datepickers)
-      {
-        this._datepickers[datepicker].destroy();
-      }
-
+    if (Object.keys(this._datepickers).length) {
+      this._datepickers.start.destroy();
+      this._datepickers.finish.destroy();
       this._datepickers = {};
     }
   }
