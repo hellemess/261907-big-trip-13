@@ -29,12 +29,12 @@ export default class TripPresenter {
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     this._handleViewAction = this._handleViewAction.bind(this);
+    this._pointNewPresenter = new PointNewPresenter(this._pointsList, this._handleViewAction);
     this._filterModel.addObserver(this._handleModelEvent);
     this._pointsModel.addObserver(this._handleModelEvent);
-    this._pointNewPresenter = new PointNewPresenter(this._pointsList, this._handleViewAction);
   }
 
-  _clearList(resetSortType = false) {
+  _clearList({resetHeader = false, resetSortType = false} = {}) {
     this._pointNewPresenter.destroy();
 
     Object
@@ -44,9 +44,13 @@ export default class TripPresenter {
     this._pointPresenter = {};
 
     remove(this._noPoints);
-    remove(this._route);
-    remove(this._cost);
     remove(this._sorting);
+
+    if (resetHeader)
+    {
+      remove(this._route);
+      remove(this._cost);
+    }
 
     if (resetSortType) {
       this._currentSortType = SortTypes.DATE;
@@ -82,11 +86,11 @@ export default class TripPresenter {
         this._pointPresenter[data.id].init(data);
         break;
       case UpdateType.MINOR:
-        this._clearList();
+        this._clearList({resetHeader: true});
         this._renderTrip();
         break;
       case UpdateType.MAJOR:
-        this._clearList(true);
+        this._clearList({resetSortType: true});
         this._renderTrip();
         break;
     }
@@ -168,8 +172,13 @@ export default class TripPresenter {
       this._renderNoPoints();
     } else {
       render(this._header, this._info, RenderPosition.AFTERBEGIN);
-      this._renderRoute(points);
-      this._renderCost(points);
+      
+      if (this._route === null && this._cost === null)
+      {
+        this._renderRoute(points);
+        this._renderCost(points);
+      }
+      
       this._renderList(points);
     }
   }
@@ -180,7 +189,20 @@ export default class TripPresenter {
     this._pointNewPresenter.init();
   }
 
+  hide() {
+    this._container.classList.add(`visually-hidden`);
+  }
+
   init() {
     this._renderTrip();
+  }
+
+  show() {
+    this._container.classList.remove(`visually-hidden`);
+    this._clearList({resetSortType: true});
+
+    const points = this._getPoints();
+
+    this._renderList(points);
   }
 }

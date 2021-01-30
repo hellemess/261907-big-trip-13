@@ -17,6 +17,11 @@ export const FilterType = {
   PAST: `past`
 };
 
+export const MenuItem = {
+  TABLE: `Table`,
+  STATS: `Stats`
+};
+
 export const OPTIONS = [
   {
     alias: `uber`,
