@@ -1,14 +1,14 @@
-import {getPrep, getOptions} from '../utils/trip';
 import AbstractView from './abstract';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
+import {getPrep, getOptions} from '../utils/trip';
 
 dayjs.extend(duration);
 
 const getTimeTemplate = (time) => {
   const {start, finish} = time;
 
-  const eventDuration = dayjs.duration(finish - start).$d;
+  const pointDuration = dayjs.duration(finish - start).$d;
 
   return `<p class="event__time">
     <time class="event__start-time" datetime="${dayjs(start).format(`YYYY-MM-DD HH:mm:ss`)}">${dayjs(start).format(`HH:mm`)}</time>
@@ -16,13 +16,13 @@ const getTimeTemplate = (time) => {
     <time class="event__end-time" datetime="${dayjs(finish).format(`YYYY-MM-DD HH:mm:ss`)}">${dayjs(finish).format(`HH:mm`)}</time>
   </p>
   <p class="event__duration">
-    ${eventDuration.days ? `${eventDuration.days}D ` : ``}
-    ${eventDuration.hours ? `${`${eventDuration.hours}`.padStart(2, `0`)}H ` : ``}
-    ${eventDuration.minutes ? `${`${eventDuration.minutes}`.padStart(2, `0`)}M` : ``}
+    ${dayjs(finish).diff(dayjs(start), `days`) ? `${dayjs(finish).diff(dayjs(start), `days`)}D ` : ``}
+    ${pointDuration.hours ? `${`${pointDuration.hours}`.padStart(2, `0`)}H ` : ``}
+    ${pointDuration.minutes ? `${`${pointDuration.minutes}`.padStart(2, `0`)}M` : ``}
   </p>`;
 };
 
-const getEventOptionTemplate = (option) => {
+const getPointOptionTemplate = (option) => {
   const {title, cost} = option;
 
   return `<li class="event__offer">
@@ -32,12 +32,12 @@ const getEventOptionTemplate = (option) => {
   </li>`;
 };
 
-const getEventTemplate = (tripEvent) => {
-  const {type, destination, cost, time, isFavorite} = tripEvent;
+const getPointTemplate = (point) => {
+  const {type, destination, cost, time, isFavorite} = point;
 
   const timeTemplate = getTimeTemplate(time);
   const options = getOptions(type);
-  const optionsTemplate = options.map((option) => getEventOptionTemplate(option)).join(``);
+  const optionsTemplate = options.map((option) => getPointOptionTemplate(option)).join(``);
 
   return `<li class="trip-events__item">
     <div class="event">
@@ -69,10 +69,10 @@ const getEventTemplate = (tripEvent) => {
   </li>`;
 };
 
-export default class EventView extends AbstractView {
-  constructor(tripEvent) {
+export default class PointView extends AbstractView {
+  constructor(point) {
     super();
-    this._event = tripEvent;
+    this._point = point;
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._openClickHandler = this._openClickHandler.bind(this);
   }
@@ -88,7 +88,7 @@ export default class EventView extends AbstractView {
   }
 
   get template() {
-    return getEventTemplate(this._event);
+    return getPointTemplate(this._point);
   }
 
   set favoriteClickHandler(callback) {

@@ -1,16 +1,16 @@
 import AbstractView from './abstract';
 import {getOptions} from '../utils/trip';
 
-const getCostTemplate = (events) => {
+const getCostTemplate = (points) => {
   let cost = 0;
 
-  for (let event of events) {
-    cost += event.cost;
+  for (let point of points) {
+    cost += point.cost;
 
-    const options = getOptions(event.type);
+    const options = getOptions(point.type);
 
     for (let option of options) {
-      cost += option.cost;
+      cost += +option.cost;
     }
   }
 
@@ -20,12 +20,12 @@ const getCostTemplate = (events) => {
 };
 
 export default class CostView extends AbstractView {
-  constructor(events) {
+  constructor(points) {
     super();
-    this._events = events;
+    this._points = points;
   }
 
   get template() {
-    return getCostTemplate(this._events);
+    return getCostTemplate(this._points);
   }
 }

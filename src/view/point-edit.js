@@ -42,13 +42,13 @@ const getDescriptionTemplate = (info) => {
 
 const getDestionationOptionTemplate = (destination) => `<option value="${destination}"></option>`;
 
-const getOptionsItemTemplate = (option, checkedOptions) => {
+const getOptionsItemTemplate = (option, checkedOptions, pointID) => {
   const {alias, title, cost} = option;
   const isChecked = checkedOptions.some((it) => it.alias === alias);
 
   return `<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${alias}-1" type="checkbox" name="event-offer-${alias}" ${isChecked ? `checked` : ``} />
-    <label class="event__offer-label" for="event-offer-${alias}-1">
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${alias}-${pointID}" type="checkbox" name="event-offer-${alias}" ${isChecked ? `checked` : ``} />
+    <label class="event__offer-label" for="event-offer-${alias}-${pointID}">
       <span class="event__offer-title">${title}</span>
       &plus;
       &euro;&nbsp;<span class="event__offer-price">${cost}</span>
@@ -56,31 +56,31 @@ const getOptionsItemTemplate = (option, checkedOptions) => {
   </div>`;
 };
 
-const getTypeTemplate = (type, isChecked) =>
+const getTypeTemplate = (type, isChecked, pointID) =>
   `<div class="event__type-item">
-    <input id="event-type-${type.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type.toLowerCase()}" ${isChecked ? `checked` : ``} />
-    <label class="event__type-label  event__type-label--${type.toLowerCase()}" for="event-type-${type.toLowerCase()}-1">${type}</label>
+    <input id="event-type-${type.toLowerCase()}-${pointID}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type.toLowerCase()}" ${isChecked ? `checked` : ``} />
+    <label class="event__type-label  event__type-label--${type.toLowerCase()}" for="event-type-${type.toLowerCase()}-${pointID}">${type}</label>
   </div>`;
 
-const getEventEditTemplate = (tripEvent) => {
-  const {type, prep, destination, cost, options, info} = tripEvent;
+const getPointEditTemplate = (point) => {
+  const {pointID, type, prep, destination, cost, options, info} = point;
 
-  const transferTypesTemplate = TYPES_TO.map((it) => getTypeTemplate(it, it === type)).join(``);
-  const activityTypesTemplate = TYPES_IN.map((it) => getTypeTemplate(it, it === type)).join(``);
+  const transferTypesTemplate = TYPES_TO.map((it) => getTypeTemplate(it, it === type, pointID)).join(``);
+  const activityTypesTemplate = TYPES_IN.map((it) => getTypeTemplate(it, it === type, pointID)).join(``);
   const destinationOptionsTemplate = DESTINATIONS.map((it) => getDestionationOptionTemplate(it)).join(``);
   const isNew = destination === `` ? true : false;
   const availableOptions = OPTIONS.filter((option) => option.forTypes.indexOf(type) >= 0);
-  const optionsTemplate = availableOptions.length > 0 ? availableOptions.map((it) => getOptionsItemTemplate(it, options)).join(``) : false;
+  const optionsTemplate = availableOptions.length > 0 ? availableOptions.map((it) => getOptionsItemTemplate(it, options, pointID)).join(``) : false;
   const descriptionTemplate = getDescriptionTemplate(info);
 
   return `<form class="trip-events__item  event  event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
-        <label class="event__type  event__type-btn" for="event-type-toggle-1">
+        <label class="event__type  event__type-btn" for="event-type-toggle-${pointID}">
           <span class="visually-hidden">Choose event type</span>
-          <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon" />
+          <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Point type icon" />
         </label>
-        <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" />
+        <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${pointID}" type="checkbox" />
         <div class="event__type-list">
           <fieldset class="event__type-group">
             <legend class="visually-hidden">Transfer</legend>
@@ -93,22 +93,25 @@ const getEventEditTemplate = (tripEvent) => {
         </div>
       </div>
       <div class="event__field-group  event__field-group--destination">
-        <label class="event__label  event__type-output" for="event-destination-1">${type} ${prep}</label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" list="destination-list-1" />
-        <datalist id="destination-list-1">
+        <label class="event__label  event__type-output" for="event-destination-${pointID}">${type} ${prep}</label>
+        <input class="event__input  event__input--destination" id="event-destination-${pointID}" type="text" name="event-destination" value="${destination}" list="destination-list-${pointID}" />
+        <datalist id="destination-list-${pointID}">
           ${destinationOptionsTemplate}
         </datalist>
       </div>
       <div class="event__field-group  event__field-group--time">
-        <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="" />
+        <label class="visually-hidden" for="event-start-time-${pointID}">From</label>
+        <input class="event__input  event__input--time" id="event-start-time-${pointID}" type="text" name="event-start-time" value="" />
+        &mdash;
+        <label class="visually-hidden" for="event-end-time-${pointID}">To</label>
+        <input class="event__input  event__input--time" id="event-end-time-${pointID}" type="text" name="event-end-time" value="" />
       </div>
       <div class="event__field-group  event__field-group--price">
-        <label class="event__label" for="event-price-1">
+        <label class="event__label" for="event-price-${pointID}">
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${cost}" />
+        <input class="event__input  event__input--price" id="event-price-${pointID}" type="text" name="event-price" value="${cost}" />
       </div>
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
       <button class="event__reset-btn" type="reset">${isNew ? `Cancel` : `Delete`}</button>
@@ -128,7 +131,7 @@ const getEventEditTemplate = (tripEvent) => {
         </div>
       </section>`
     : ``}
-      ${descriptionTemplate
+      ${descriptionTemplate && !isNew
     ? `${descriptionTemplate}`
     : ``}
       </section>`
@@ -136,17 +139,19 @@ const getEventEditTemplate = (tripEvent) => {
   </form>`;
 };
 
-export default class EventEditView extends SmartView {
-  constructor(tripEvent = BLANK_EVENT) {
+export default class PointEditView extends SmartView {
+  constructor(point = BLANK_EVENT) {
     super();
-    this._data = EventEditView.parseEventToData(tripEvent);
-    this._datepicker = null;
+    this._data = PointEditView.parsePointToData(point);
+    this._datepickers = {};
     this._closeClickHandler = this._closeClickHandler.bind(this);
+    this._costChangeHandler = this._costChangeHandler.bind(this);
     this._dateChangeHandler = this._dateChangeHandler.bind(this);
+    this._deleteClickHandler = this._deleteClickHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._transferTypeChangeHandler = this._transferTypeChangeHandler.bind(this);
-    this._setDatepicker();
+    this._setDatepickers();
     this._setInnerHandlers();
   }
 
@@ -155,21 +160,37 @@ export default class EventEditView extends SmartView {
     this._callback.closeClick();
   }
 
-  _dateChangeHandler(dates) {
+  _costChangeHandler(evt) {
+    this.updateData({
+      cost: evt.target.value
+    }, true);
+
+    this.element.querySelector(`.event__save-btn`).disabled = !/^[0-9]*$/.test(evt.target.value);
+  }
+
+  _deleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(PointEditView.parseDataToPoint(this._data));
+  }
+
+  _dateChangeHandler(userDate, dateString, instance) {
+    const start = instance.element.name === `event-start-time` ? userDate[0] : this._data.time.start;
+    const finish = instance.element.name === `event-end-time` ? userDate[0] : this._data.time.finish;
+
     this.updateData({
       time: {
-        start: dates[0],
-        finish: dates[1]
+        start,
+        finish
       }
-    });
+    }, true);
 
-    this.element.querySelector(`.event__save-btn`).disabled = !dates[1] || dates[0] >= dates[1];
+    this.element.querySelector(`.event__save-btn`).disabled = start >= finish;
   }
 
   _destinationChangeHandler(evt) {
     evt.preventDefault();
 
-    const availableDestinations = this.element.querySelectorAll(`#destination-list-1 option`);
+    const availableDestinations = this.element.querySelectorAll(`[id*="destination-list"] option`);
     let isDestinationAvailable = false;
 
     for (let destination of availableDestinations) {
@@ -200,32 +221,41 @@ export default class EventEditView extends SmartView {
     }
   }
 
-  _formSubmitHandler(evt) {
-    evt.preventDefault();
-    this._callback.formSubmit(EventEditView.parseDataToEvent(this._data));
+  _destroyDatepickers() {
+    if (Object.keys(this._datepickers).length) {
+      this._datepickers.start.destroy();
+      this._datepickers.finish.destroy();
+      this._datepickers = {};
+    }
   }
 
-  _setDatepicker() {
-    if (this._datepicker) {
-      this._datepicker.destroy();
-      this._datepicker = null;
-    }
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit(PointEditView.parseDataToPoint(this._data));
+  }
 
-    this._datepicker = flatpickr(
-        this.element.querySelector(`.event__input--time`),
+  _setDatepicker(selector, defaultDate) {
+    return flatpickr(
+        this.element.querySelector(selector),
         {
           dateFormat: `d/m/y H:i`,
-          defaultDate: [this._data.time.start, this._data.time.finish],
+          defaultDate,
           enableTime: true,
-          mode: `range`,
           onChange: this._dateChangeHandler
         }
     );
   }
 
+  _setDatepickers() {
+    this._destroyDatepickers();
+    this._datepickers.start = this._setDatepicker(`[name="event-start-time"]`, this._data.time.start);
+    this._datepickers.finish = this._setDatepicker(`[name="event-end-time"]`, this._data.time.finish);
+  }
+
   _setInnerHandlers() {
     this.element.querySelector(`.event__type-list`).addEventListener(`change`, this._transferTypeChangeHandler);
     this.element.querySelector(`.event__field-group--destination`).addEventListener(`input`, this._destinationChangeHandler);
+    this.element.querySelector(`.event__input--price`).addEventListener(`input`, this._costChangeHandler);
   }
 
   _transferTypeChangeHandler(evt) {
@@ -243,12 +273,23 @@ export default class EventEditView extends SmartView {
   }
 
   get template() {
-    return getEventEditTemplate(this._data);
+    return getPointEditTemplate(this._data);
   }
 
   set closeClickHandler(callback) {
     this._callback.closeClick = callback;
-    this.element.querySelector(`.event__rollup-btn`).addEventListener(`click`, this._closeClickHandler);
+
+    if (this.element.querySelector(`.event__rollup-btn`)) {
+      this.element.querySelector(`.event__rollup-btn`).addEventListener(`click`, this._closeClickHandler);
+    }
+  }
+
+  set deleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+
+    if (this.element.querySelector(`.event__reset-btn`)) {
+      this.element.querySelector(`.event__reset-btn`).addEventListener(`click`, this._deleteClickHandler);
+    }
   }
 
   set formSubmitHandler(callback) {
@@ -256,36 +297,48 @@ export default class EventEditView extends SmartView {
     this.element.addEventListener(`submit`, this._formSubmitHandler);
   }
 
-  reset(tripEvent) {
+  removeElement() {
+    super.removeElement();
+    this._destroyDatepickers();
+  }
+
+  reset(point) {
     this.updateData(
-        EventEditView.parseEventToData(tripEvent)
+        PointEditView.parsePointToData(point)
     );
   }
 
   restoreHandlers() {
-    this._setDatepicker();
+    this._setDatepickers();
     this._setInnerHandlers();
-    this.element.querySelector(`.event__rollup-btn`).addEventListener(`click`, this._closeClickHandler);
     this.element.addEventListener(`submit`, this._formSubmitHandler);
+
+    if (this.element.querySelector(`.event__rollup-btn`)) {
+      this.element.querySelector(`.event__rollup-btn`).addEventListener(`click`, this._closeClickHandler);
+    }
+
+    if (this.element.querySelector(`.event__reset-btn`)) {
+      this.element.querySelector(`.event__reset-btn`).addEventListener(`click`, this._deleteClickHandler);
+    }
   }
 
-  static parseDataToEvent(data) {
-    const tripEvent = data;
+  static parseDataToPoint(data) {
+    const point = data;
 
-    delete tripEvent.prep;
-    delete tripEvent.options;
-    delete tripEvent.info;
+    delete point.prep;
+    delete point.options;
+    delete point.info;
 
-    return tripEvent;
+    return point;
   }
 
-  static parseEventToData(tripEvent) {
+  static parsePointToData(point) {
     return Object.assign(
         {},
-        tripEvent,
+        point,
         {
-          prep: getPrep(tripEvent.type),
-          options: getOptions(tripEvent.type),
+          prep: getPrep(point.type),
+          options: getOptions(point.type),
           info: {
             description: getDescription(),
             photos: getPhotos()

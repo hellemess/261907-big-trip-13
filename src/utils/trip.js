@@ -32,15 +32,15 @@ export const getPhotos = () => {
 
 export const getPrep = (type) => TYPES_IN.indexOf(type) < 0 ? `to` : `in`;
 
-export const isFutureEvent = (date) => date > new Date();
+export const isFuturePoint = (date) => date > new Date();
 
-export const sortDate = (eventA, eventB) => eventA.time.start.getTime() - eventB.time.start.getTime();
+export const sortDate = (pointA, pointB) => pointA.time.start.getTime() - pointB.time.start.getTime();
 
-export const sortPrice = (eventA, eventB) => eventB.cost - eventA.cost;
+export const sortPrice = (pointA, pointB) => pointB.cost - pointA.cost;
 
-export const sortTime = (eventA, eventB) => {
-  const eventADuration = eventA.time.finish - eventA.time.start;
-  const eventBDuration = eventB.time.finish - eventB.time.start;
+export const sortTime = (pointA, pointB) => {
+  const pointADuration = pointA.time.finish - pointA.time.start;
+  const pointBDuration = pointB.time.finish - pointB.time.start;
 
-  return eventBDuration - eventADuration;
+  return pointBDuration - pointADuration;
 };
