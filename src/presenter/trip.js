@@ -46,8 +46,7 @@ export default class TripPresenter {
     remove(this._noPoints);
     remove(this._sorting);
 
-    if (resetHeader)
-    {
+    if (resetHeader) {
       remove(this._route);
       remove(this._cost);
     }
@@ -172,13 +171,12 @@ export default class TripPresenter {
       this._renderNoPoints();
     } else {
       render(this._header, this._info, RenderPosition.AFTERBEGIN);
-      
-      if (this._route === null && this._cost === null)
-      {
+
+      if (this._route === null && this._cost === null) {
         this._renderRoute(points);
         this._renderCost(points);
       }
-      
+
       this._renderList(points);
     }
   }

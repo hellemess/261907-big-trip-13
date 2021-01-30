@@ -87,43 +87,43 @@ const renderMoneyChart = (moneyCtx, points, types) => {
   });
 
   const formatter = (value) => `€ ${value}`;
-  
+
   renderChart(moneyCtx, types, values, formatter, `MONEY`);
 };
 
 const renderTimeChart = (timeCtx, points, types) => {
-    const values = Array(types.length).fill(0);
+  const values = Array(types.length).fill(0);
 
-    points.forEach((it) => {
-      const index = types.findIndex((type) => type === it.type);
+  points.forEach((it) => {
+    const index = types.findIndex((type) => type === it.type);
 
-      values[index] += it.time.finish - it.time.start;
-    });
+    values[index] += it.time.finish - it.time.start;
+  });
 
-    const formatter = (value) => {
-      const typeDuration = dayjs.duration(value).$d;
+  const formatter = (value) => {
+    const typeDuration = dayjs.duration(value).$d;
 
-      return `${typeDuration.days ? `${typeDuration.days}D ` : ``}${typeDuration.hours ? `${`${typeDuration.hours}`.padStart(2, `0`)}H ` : ``}${typeDuration.minutes ? `${`${typeDuration.minutes}`.padStart(2, `0`)}M` : ``}`;
-    };
+   return `${typeDuration.days ? `${typeDuration.days}D ` : ``}${typeDuration.hours ? `${`${typeDuration.hours}`.padStart(2, `0`)}H ` : ``}${typeDuration.minutes ? `${`${typeDuration.minutes}`.padStart(2, `0`)}M` : ``}`;
+  };
 
-    renderChart(timeCtx, types, values, formatter, `TIME`);
+  renderChart(timeCtx, types, values, formatter, `TIME`);
 };
 
 const renderTypeChart = (typeCtx, points, types) => {
-    const values = Array(types.length).fill(0);
+  const values = Array(types.length).fill(0);
 
-    points.forEach((it) => {
-      const index = types.findIndex((type) => type === it.type);
+  points.forEach((it) => {
+    const index = types.findIndex((type) => type === it.type);
 
-      values[index] += 1;
-    });
+    values[index] += 1;
+  });
 
-    const formatter = (value) => `${value}x`;
-    
-    renderChart(typeCtx, types, values, formatter, `TYPE`);
+  const formatter = (value) => `${value}x`;
+
+  renderChart(typeCtx, types, values, formatter, `TYPE`);
 };
 
-const getStatsTemplate = (points) => {
+const getStatsTemplate = () => {
   return `<section class="statistics">
       <h2 class="visually-hidden">Trip statistics</h2>
       <div class="statistics__item statistics__item--money">
@@ -139,8 +139,7 @@ const getStatsTemplate = (points) => {
 };
 
 export default class StatsView extends SmartView {
-  constructor(points)
-  {
+  constructor(points) {
     super();
     this._points = points;
     this._types = [...new Set(this._points.map((it) => it.type))];

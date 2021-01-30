@@ -2,7 +2,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 import dayjs from 'dayjs';
 import {DESTINATIONS, OPTIONS, TYPES_IN, TYPES_TO} from '../const';
 import flatpickr from 'flatpickr';
-import {areDatesValid, getDescription, getOptions, getPhotos, getPrep, isCostValid, isDestinationValid, isFormValid} from '../utils/trip';
+import {getDescription, getOptions, getPhotos, getPrep, isDestinationValid, isFormValid} from '../utils/trip';
 import SmartView from './smart';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
@@ -205,14 +205,11 @@ export default class PointEditView extends SmartView {
     };
 
     this.updateData({
-        destination,
-        info
-      }, true);
+      destination,
+      info
+    }, true);
 
-    console.log(isDestinationValid(this._data.destination, this.element.querySelectorAll(`[id*="destination-list"] option`)));
-
-    if (isDestinationValid(this._data.destination, this.element.querySelectorAll(`[id*="destination-list"] option`)))
-    {
+    if (isDestinationValid(this._data.destination, this.element.querySelectorAll(`[id*="destination-list"] option`))) {
       this.updateElement();
     }
 

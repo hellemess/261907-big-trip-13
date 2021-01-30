@@ -16,7 +16,7 @@ export default class MenuView extends AbstractView {
   get menuItem() {
     return this._menuItem;
   }
-  
+
   get template() {
     return `<nav class="trip-controls__trip-tabs  trip-tabs">
         <a class="trip-tabs__btn  trip-tabs__btn--active" href="#" data-title="${MenuItem.TABLE}">${MenuItem.TABLE}</a>
@@ -26,9 +26,8 @@ export default class MenuView extends AbstractView {
 
   set menuClickHandler(callback) {
     this._callback.menuClick = callback;
-    
-    for (let link of this.element.querySelectorAll(`.trip-tabs__btn`))
-    {
+
+    for (let link of this.element.querySelectorAll(`.trip-tabs__btn`)) {
       link.addEventListener(`click`, this._menuClickHandler);
     }
   }

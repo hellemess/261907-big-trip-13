@@ -40,8 +40,7 @@ export const isDestinationValid = (currentDestination, destinations) => {
   let isDestinationAvailable = false;
 
   for (let destination of destinations) {
-    if (destination.value === currentDestination)
-    {
+    if (destination.value === currentDestination) {
       isDestinationAvailable = true;
       break;
     }
