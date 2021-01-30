@@ -1,8 +1,8 @@
-import {generateId} from '../mock/points.js';
+import {generateId} from '../utils/trip';
 import {KeyCodes} from '../utils/common';
-import PointEditView from '../view/point-edit.js';
-import {RenderPosition, remove, render} from '../utils/render.js';
-import {UserAction, UpdateType} from '../const.js';
+import PointEditView from '../view/point-edit';
+import {RenderPosition, remove, render} from '../utils/render';
+import {UserAction, UpdateType} from '../const';
 
 export default class PointNewPresenter {
   constructor(container, changeData) {
@@ -45,12 +45,12 @@ export default class PointNewPresenter {
     document.removeEventListener(`keydown`, this._onEscKeyDown);
   }
 
-  init() {
+  init(destinations, offers) {
     if (this._pointEdit !== null) {
       return;
     }
 
-    this._pointEdit = new PointEditView();
+    this._pointEdit = new PointEditView(destinations, offers);
     this._pointEdit.formSubmitHandler = this._handleFormSubmit;
     this._pointEdit.deleteClickHandler = this._handleDeleteClick;
     render(this._container, this._pointEdit, RenderPosition.AFTERBEGIN);

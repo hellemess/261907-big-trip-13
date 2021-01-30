@@ -17,26 +17,25 @@ const getTimeTemplate = (time) => {
   </p>
   <p class="event__duration">
     ${dayjs(finish).diff(dayjs(start), `days`) ? `${dayjs(finish).diff(dayjs(start), `days`)}D ` : ``}
-    ${pointDuration.hours ? `${`${pointDuration.hours}`.padStart(2, `0`)}H ` : ``}
-    ${pointDuration.minutes ? `${`${pointDuration.minutes}`.padStart(2, `0`)}M` : ``}
+    ${dayjs(finish).diff(dayjs(start), `days`) || pointDuration.hours ? `${`${pointDuration.hours}`.padStart(2, `0`)}H ` : ``}
+    ${`${pointDuration.minutes}`.padStart(2, `0`)}M
   </p>`;
 };
 
 const getPointOptionTemplate = (option) => {
-  const {title, cost} = option;
+  const {title, price} = option;
 
   return `<li class="event__offer">
     <span class="event__offer-title">${title}</span>
     &plus;
-    &euro;&nbsp;<span class="event__offer-price">${cost}</span>
+    &euro;&nbsp;<span class="event__offer-price">${price}</span>
   </li>`;
 };
 
-const getPointTemplate = (point) => {
-  const {type, destination, cost, time, isFavorite} = point;
+const getPointTemplate = (point, offers) => {
+  const {type, destination, cost, time, isFavorite, options} = point;
 
   const timeTemplate = getTimeTemplate(time);
-  const options = getOptions(type);
   const optionsTemplate = options.map((option) => getPointOptionTemplate(option)).join(``);
 
   return `<li class="trip-events__item">
@@ -70,9 +69,10 @@ const getPointTemplate = (point) => {
 };
 
 export default class PointView extends AbstractView {
-  constructor(point) {
+  constructor(point, offers) {
     super();
     this._point = point;
+    this._offers = offers;
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._openClickHandler = this._openClickHandler.bind(this);
   }
@@ -88,7 +88,7 @@ export default class PointView extends AbstractView {
   }
 
   get template() {
-    return getPointTemplate(this._point);
+    return getPointTemplate(this._point, this._offers);
   }
 
   set favoriteClickHandler(callback) {

@@ -14,6 +14,8 @@ const descriptionSentences = [
 
 export const areDatesValid = (startDate, finishDate) => startDate < finishDate;
 
+export const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+
 export const getDescription = () => {
   const randomSentencesCount = getRandomInteger(0, descriptionSentences.length);
 
@@ -34,7 +36,7 @@ export const getPhotos = () => {
 
 export const getPrep = (type) => TYPES_IN.indexOf(type) < 0 ? `to` : `in`;
 
-export const isCostValid = (cost) => /^[0-9]*$/.test(cost) && cost.length;
+export const isCostValid = (cost) => /^[0-9]*$/.test(cost) && (cost).length;
 
 export const isDestinationValid = (currentDestination, destinations) => {
   let isDestinationAvailable = false;
@@ -49,7 +51,7 @@ export const isDestinationValid = (currentDestination, destinations) => {
   return isDestinationAvailable;
 };
 
-export const isFormValid = (point, destinations) => areDatesValid(point.time.start, point.time.finish) && isCostValid(point.cost) && isDestinationValid(point.destination, destinations);
+export const isFormValid = (point, destinations) => areDatesValid(point.time.start, point.time.finish) && isCostValid(point.cost + '') && isDestinationValid(point.destination, destinations);
 
 export const isFuturePoint = (date) => date > new Date();
 

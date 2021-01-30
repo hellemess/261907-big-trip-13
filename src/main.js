@@ -1,42 +1,40 @@
-import PointsModel from './model/points';
+import Api from "./api.js";
 import FilterModel from './model/filter';
 import FilterPresenter from './presenter/filter';
 import {FilterType, MenuItem, UpdateType} from './const';
-import {generatePoints} from './mock/points';
 import HiddenHeadingView from './view/hidden-heading';
 import MenuView from './view/menu';
+import NewPointButtonView from './view/new-point-button';
+import PointsModel from './model/points';
 import {RenderPosition, remove, render} from './utils/render';
 import StatsView from './view/stats';
 import TripPresenter from './presenter/trip';
 
-const POINTS_COUNT = 23;
+const AUTHORIZATION = `Basic m000hujy6mvfbvg6gfvnhuy7tg5r6rf4dx`;
+const END_POINT = `https://13.ecmascript.pages.academy/big-trip/`;
 
-const points = generatePoints(POINTS_COUNT);
-
+const api = new Api(END_POINT, AUTHORIZATION);
 const filterModel = new FilterModel();
 const pointsModel = new PointsModel();
-
-pointsModel.points = points;
 
 const header = document.querySelector('.trip-main');
 const controls = header.querySelector(`.trip-controls`);
 const content = document.querySelector(`.trip-events`);
 
-const tripPresenter = new TripPresenter(header, content, pointsModel, filterModel);
+const tripPresenter = new TripPresenter(header, content, pointsModel, filterModel, api);
 const filterPresenter = new FilterPresenter(controls, filterModel, pointsModel);
 
 const menu = new MenuView();
-const stats = new StatsView(pointsModel.points);
+const newPointButtonView = new NewPointButtonView();
+let stats = null;
 
 render(controls, new HiddenHeadingView(`Switch trip view`), RenderPosition.BEFOREEND);
 render(controls, menu, RenderPosition.BEFOREEND);
-render(controls, new HiddenHeadingView(`Filter points`), RenderPosition.BEFOREEND);
-render(content, stats, RenderPosition.AFTEREND);
-filterPresenter.init();
-tripPresenter.init();
+render(controls, new HiddenHeadingView(`Filter events`), RenderPosition.BEFOREEND);
+render(controls, newPointButtonView, RenderPosition.AFTEREND);
 
 const handleMenuClick = (menuItem) => {
-  if (menu.menuItem === menuItem)
+  if (menu.menuItem === menuItem || stats === null)
   {
     return;
   }
@@ -55,11 +53,7 @@ const handleMenuClick = (menuItem) => {
   }
 };
 
-menu.menuClickHandler = handleMenuClick;
-
-document.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, (evt) => {
-  evt.preventDefault();
-
+const handleNewPointButtonClick = () => {
   if (menu.menuItem === MenuItem.STATS)
   {
     menu.menuItem = MenuItem.TABLE;
@@ -68,4 +62,25 @@ document.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, (e
   }
 
   tripPresenter.createPoint();
-});
+};
+
+const showMenu = (points) => {
+  menu.menuClickHandler = handleMenuClick;
+  newPointButtonView.element.disabled = false;
+  newPointButtonView.clickHadler = handleNewPointButtonClick;
+  stats = new StatsView(points);
+  render(content, stats, RenderPosition.AFTEREND);
+}
+
+filterPresenter.init();
+tripPresenter.init();
+
+api.points
+  .then((points) => {
+    pointsModel.setPoints(UpdateType.INIT, points);
+    showMenu(points);
+  })
+  .catch(() => {
+    pointsModel.setPoints(UpdateType.INIT, []);
+    showMenu([]);
+  });
