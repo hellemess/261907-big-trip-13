@@ -1,0 +1,18 @@
+.offline-notification {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1000;
+
+  padding: 15px;
+
+  font-weight: 500;
+
+  color: #cc0000;
+  background: #f5cccc;
+
+  border: 2px solid #cc0000;
+  border-radius: 8px;
+
+  transform: translateX(-50%);
+}

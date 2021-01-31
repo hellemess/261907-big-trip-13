@@ -13,10 +13,11 @@ import SortingView from '../view/sorting';
 import {sortDate, sortPrice, sortTime} from '../utils/trip';
 
 export default class TripPresenter {
-  constructor(header, container, pointsModel, filterModel, api) {
+  constructor(header, container, pointsModel, filterModel, api, statsPresenter) {
     this._pointsModel = pointsModel;
     this._filterModel = filterModel;
     this._api = api;
+    this._statsPresenter = statsPresenter;
     this._header = header;
     this._container = container;
     this._cost = null;
@@ -187,7 +188,6 @@ export default class TripPresenter {
 
   _renderPoint(point, destinations, offers) {
     const pointPresenter = new PointPresenter(this._pointsList, this._handleViewAction, this._handleModeChange);
-
     pointPresenter.init(point, destinations, offers);
     this._pointPresenter[point.id] = pointPresenter;
   }
@@ -233,6 +233,7 @@ export default class TripPresenter {
       }
 
       this._renderList(points);
+      this._statsPresenter.init(points);
     }
   }
 

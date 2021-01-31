@@ -1,7 +1,8 @@
 
 import PointEditView from '../view/point-edit';
 import PointView from '../view/point';
-import {KeyCodes} from '../utils/common';
+import {isOnline, KeyCodes} from '../utils/common';
+import {offline} from '../utils/offline/offline';
 import {RenderPosition, remove, render, replace} from '../utils/render';
 import {UserAction, UpdateType} from "../const.js";
 
@@ -38,6 +39,11 @@ export default class PointPresenter {
   }
 
   _handleDeleteClick(point) {
+    if (!isOnline()) {
+      offline(`You can’t delete event offline`);
+      return;
+    }
+
     this._changeData(
         UserAction.DELETE_POINT,
         UpdateType.MINOR,
@@ -60,6 +66,11 @@ export default class PointPresenter {
   }
 
   _handleFormSubmit(point) {
+    if (!isOnline()) {
+      offline(`You can’t save event offline`);
+      return;
+    }
+
     this._changeData(
         UserAction.UPDATE_POINT,
         UpdateType.MINOR,
@@ -68,6 +79,11 @@ export default class PointPresenter {
   }
 
   _handleOpenClick() {
+    if (!isOnline()) {
+      offline(`You can’t edit event offline`);
+      return;
+    }
+
     this._switchPointToForm();
   }
 

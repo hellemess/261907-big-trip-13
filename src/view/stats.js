@@ -20,7 +20,9 @@ const renderChart = (ctx, types, values, formatter, chartTitle) => {
         data: values,
         backgroundColor: `#ffffff`,
         hoverBackgroundColor: `#ffffff`,
-        anchor: `start`
+        anchor: `start`,
+        barThickness: 44,
+        minBarLength: 50
       }]
     },
     options: {
@@ -52,8 +54,7 @@ const renderChart = (ctx, types, values, formatter, chartTitle) => {
           gridLines: {
             display: false,
             drawBorder: false
-          },
-          barThickness: 44,
+          }
         }],
         xAxes: [{
           ticks: {
@@ -63,15 +64,14 @@ const renderChart = (ctx, types, values, formatter, chartTitle) => {
           gridLines: {
             display: false,
             drawBorder: false
-          },
-          minBarLength: 50
+          }
         }],
       },
       legend: {
         display: false
       },
       tooltips: {
-        enabled: false,
+        enabled: false
       }
     }
   });
