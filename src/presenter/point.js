@@ -142,8 +142,8 @@ export default class PointPresenter {
         isDisabled: false,
         isSaving: false
       });
-    }
-    
+    };
+
     switch (state) {
       case State.SAVING:
         this._pointEdit.updateData({
