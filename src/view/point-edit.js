@@ -1,8 +1,8 @@
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import dayjs from 'dayjs';
-import {DESTINATIONS, OPTIONS, TYPES_IN, TYPES_TO} from '../const';
+import {TYPES_IN, TYPES_TO} from '../const';
 import flatpickr from 'flatpickr';
-import {getDescription, getOptions, getPhotos, getPrep, isDestinationValid, isFormValid} from '../utils/trip';
+import {getPrep, isDestinationValid, isFormValid} from '../utils/trip';
 import SmartView from './smart';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
@@ -13,6 +13,7 @@ const BLANK_EVENT = {
   destination: ``,
   cost: ``,
   info: null,
+  options: [],
   time: {
     start: new Date(),
     finish: new Date()
@@ -36,25 +37,26 @@ const getDescriptionTemplate = (info) => {
     ${photos.length > 0
     ? `<div class="event__photos-container">
         <div class="event__photos-tape">
-          ${photos.map((photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`).join(``)}
+          ${photos.map((photo) => `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`).join(``)}
         </div>
       </div>`
     : ``}
   </section>`;
 };
 
-const getDestionationOptionTemplate = (destination) => `<option value="${destination}"></option>`;
+const getDestionationOptionTemplate = (destination) => `<option value="${destination.name}"></option>`;
 
-const getOptionsItemTemplate = (option, checkedOptions, id) => {
-  const {alias, title, cost} = option;
-  const isChecked = checkedOptions.some((it) => it.alias === alias);
+const getOptionsItemTemplate = (option, optionID, checkedOptions, id) => {
+  const {title, price} = option;
+
+  const isChecked = checkedOptions.find((value) => value.title === title);
 
   return `<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${alias}-${id}" type="checkbox" name="event-offer-${alias}" ${isChecked ? `checked` : ``} />
-    <label class="event__offer-label" for="event-offer-${alias}-${id}">
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${optionID}-${id}" type="checkbox" name="event-offer-${optionID}" data-title="${title}" data-price="${price}" ${isChecked ? `checked` : ``} />
+    <label class="event__offer-label" for="event-offer-${optionID}-${id}">
       <span class="event__offer-title">${title}</span>
       &plus;
-      &euro;&nbsp;<span class="event__offer-price">${cost}</span>
+      &euro;&nbsp;<span class="event__offer-price">${price}</span>
     </label>
   </div>`;
 };
@@ -65,15 +67,15 @@ const getTypeTemplate = (type, isChecked, id) =>
     <label class="event__type-label  event__type-label--${type.toLowerCase()}" for="event-type-${type.toLowerCase()}-${id}">${type}</label>
   </div>`;
 
-const getPointEditTemplate = (point) => {
+const getPointEditTemplate = (point, destinations, offers) => {
   const {id, type, prep, destination, cost, options, info} = point;
 
   const transferTypesTemplate = TYPES_TO.map((it) => getTypeTemplate(it, it === type, id)).join(``);
   const activityTypesTemplate = TYPES_IN.map((it) => getTypeTemplate(it, it === type, id)).join(``);
-  const destinationOptionsTemplate = DESTINATIONS.map((it) => getDestionationOptionTemplate(it)).join(``);
+  const destinationOptionsTemplate = destinations.map((it) => getDestionationOptionTemplate(it)).join(``);
   const isNew = destination === `` ? true : false;
-  const availableOptions = OPTIONS.filter((option) => option.forTypes.indexOf(type) >= 0);
-  const optionsTemplate = availableOptions.length > 0 ? availableOptions.map((it) => getOptionsItemTemplate(it, options, id)).join(``) : false;
+  const availableOptions = offers.find((offer) => offer.type === type.toLowerCase()).offers;
+  const optionsTemplate = availableOptions.length > 0 ? availableOptions.map((it, i) => getOptionsItemTemplate(it, `${type}-${i}`, options, id)).join(``) : false;
   const descriptionTemplate = getDescriptionTemplate(info);
 
   return `<form class="trip-events__item  event  event--edit" action="#" method="post">
@@ -143,9 +145,11 @@ const getPointEditTemplate = (point) => {
 };
 
 export default class PointEditView extends SmartView {
-  constructor(point = BLANK_EVENT) {
+  constructor(destinations, offers, point = BLANK_EVENT) {
     super();
     this._data = PointEditView.parsePointToData(point);
+    this._destinations = destinations;
+    this._offers = offers;
     this._datepickers = {};
     this._closeClickHandler = this._closeClickHandler.bind(this);
     this._costChangeHandler = this._costChangeHandler.bind(this);
@@ -153,6 +157,7 @@ export default class PointEditView extends SmartView {
     this._deleteClickHandler = this._deleteClickHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._optionTypePickHandler = this._optionTypePickHandler.bind(this);
     this._transferTypeChangeHandler = this._transferTypeChangeHandler.bind(this);
     this._setDatepickers();
     this._setInnerHandlers();
@@ -199,18 +204,19 @@ export default class PointEditView extends SmartView {
 
     const destination = evt.target.value;
 
-    const info = {
-      description: getDescription(),
-      photos: getPhotos()
-    };
-
     this.updateData({
-      destination,
-      info
+      destination
     }, true);
 
     if (isDestinationValid(this._data.destination, this.element.querySelectorAll(`[id*="destination-list"] option`))) {
-      this.updateElement();
+      const info = {
+        description: this._destinations.find((value) => value.name === destination).description,
+        photos: this._destinations.find((value) => value.name === destination).pictures
+      };
+
+      this.updateData({
+        info
+      });
     }
 
     this.element.querySelector(`.event__save-btn`).disabled = !isFormValid(this._data, this.element.querySelectorAll(`[id*="destination-list"] option`));
@@ -227,6 +233,25 @@ export default class PointEditView extends SmartView {
   _formSubmitHandler(evt) {
     evt.preventDefault();
     this._callback.formSubmit(PointEditView.parseDataToPoint(this._data));
+  }
+
+  _optionTypePickHandler(evt) {
+    evt.preventDefault();
+
+    const updatedOptions = [];
+
+    for (let option of this.element.querySelectorAll(`.event__offer-checkbox`)) {
+      if (option.checked) {
+        updatedOptions.push({
+          title: option.dataset.title,
+          price: +option.dataset.price
+        });
+      }
+    }
+
+    this.updateData({
+      options: updatedOptions
+    }, true);
   }
 
   _setDatepicker(selector, defaultDate) {
@@ -251,6 +276,10 @@ export default class PointEditView extends SmartView {
     this.element.querySelector(`.event__type-list`).addEventListener(`change`, this._transferTypeChangeHandler);
     this.element.querySelector(`.event__field-group--destination`).addEventListener(`input`, this._destinationChangeHandler);
     this.element.querySelector(`.event__input--price`).addEventListener(`input`, this._costChangeHandler);
+
+    if (this._offers.find((value) => value.type === this._data.type.toLowerCase()).offers.length > 0) {
+      this.element.querySelector(`.event__offer-selector`).addEventListener(`change`, this._optionTypePickHandler);
+    }
   }
 
   _transferTypeChangeHandler(evt) {
@@ -258,7 +287,7 @@ export default class PointEditView extends SmartView {
 
     const type = evt.target.nextElementSibling.innerHTML;
     const prep = getPrep(type);
-    const options = getOptions(type);
+    const options = [];
 
     this.updateData({
       type,
@@ -268,7 +297,7 @@ export default class PointEditView extends SmartView {
   }
 
   get template() {
-    return getPointEditTemplate(this._data);
+    return getPointEditTemplate(this._data, this._destinations, this._offers);
   }
 
   set closeClickHandler(callback) {
@@ -321,8 +350,6 @@ export default class PointEditView extends SmartView {
     const point = data;
 
     delete point.prep;
-    delete point.options;
-    delete point.info;
 
     return point;
   }
@@ -332,12 +359,7 @@ export default class PointEditView extends SmartView {
         {},
         point,
         {
-          prep: getPrep(point.type),
-          options: getOptions(point.type),
-          info: {
-            description: getDescription(),
-            photos: getPhotos()
-          }
+          prep: getPrep(point.type)
         }
     );
   }

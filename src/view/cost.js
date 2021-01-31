@@ -1,5 +1,4 @@
 import AbstractView from './abstract';
-import {getOptions} from '../utils/trip';
 
 const getCostTemplate = (points) => {
   let cost = 0;
@@ -7,10 +6,8 @@ const getCostTemplate = (points) => {
   for (let point of points) {
     cost += +point.cost;
 
-    const options = getOptions(point.type);
-
-    for (let option of options) {
-      cost += +option.cost;
+    for (let option of point.options) {
+      cost += +option.price;
     }
   }
 

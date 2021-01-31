@@ -69,7 +69,7 @@ export default class PointPresenter {
 
   _onEscKeyDown(evt) {
     if (evt.keyCode === KeyCodes.ESC) {
-      evt.prpointDefault();
+      evt.preventDefault();
       this._pointEdit.reset(this._point);
       this._switchFormToPoint();
     }
@@ -93,14 +93,14 @@ export default class PointPresenter {
     remove(this._pointEdit);
   }
 
-  init(point) {
+  init(point, destinations, offers) {
     this._point = point;
 
     const prevPointItem = this._pointItem;
     const prevPointEdit = this._pointEdit;
 
     this._pointItem = new PointView(point);
-    this._pointEdit = new PointEditView(point);
+    this._pointEdit = new PointEditView(destinations, offers, point);
     this._pointItem.favoriteClickHandler = this._handleFavoriteClick;
     this._pointItem.openClickHandler = this._handleOpenClick;
     this._pointEdit.closeClickHandler = this._handleCloseClick;

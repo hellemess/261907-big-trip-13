@@ -1,7 +1,7 @@
 import AbstractView from './abstract';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-import {getPrep, getOptions} from '../utils/trip';
+import {getPrep} from '../utils/trip';
 
 dayjs.extend(duration);
 
@@ -17,26 +17,25 @@ const getTimeTemplate = (time) => {
   </p>
   <p class="event__duration">
     ${dayjs(finish).diff(dayjs(start), `days`) ? `${dayjs(finish).diff(dayjs(start), `days`)}D ` : ``}
-    ${pointDuration.hours ? `${`${pointDuration.hours}`.padStart(2, `0`)}H ` : ``}
-    ${pointDuration.minutes ? `${`${pointDuration.minutes}`.padStart(2, `0`)}M` : ``}
+    ${dayjs(finish).diff(dayjs(start), `days`) || pointDuration.hours ? `${`${pointDuration.hours}`.padStart(2, `0`)}H ` : ``}
+    ${`${pointDuration.minutes}`.padStart(2, `0`)}M
   </p>`;
 };
 
 const getPointOptionTemplate = (option) => {
-  const {title, cost} = option;
+  const {title, price} = option;
 
   return `<li class="event__offer">
     <span class="event__offer-title">${title}</span>
     &plus;
-    &euro;&nbsp;<span class="event__offer-price">${cost}</span>
+    &euro;&nbsp;<span class="event__offer-price">${price}</span>
   </li>`;
 };
 
 const getPointTemplate = (point) => {
-  const {type, destination, cost, time, isFavorite} = point;
+  const {type, destination, cost, time, isFavorite, options} = point;
 
   const timeTemplate = getTimeTemplate(time);
-  const options = getOptions(type);
   const optionsTemplate = options.map((option) => getPointOptionTemplate(option)).join(``);
 
   return `<li class="trip-events__item">
