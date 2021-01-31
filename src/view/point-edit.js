@@ -46,13 +46,13 @@ const getDescriptionTemplate = (info) => {
 
 const getDestionationOptionTemplate = (destination) => `<option value="${destination.name}"></option>`;
 
-const getOptionsItemTemplate = (option, optionID, checkedOptions, id) => {
+const getOptionsItemTemplate = (option, optionID, checkedOptions, id, isDisabled) => {
   const {title, price} = option;
 
   const isChecked = checkedOptions.find((value) => value.title === title);
 
   return `<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${optionID}-${id}" type="checkbox" name="event-offer-${optionID}" data-title="${title}" data-price="${price}" ${isChecked ? `checked` : ``} />
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${optionID}-${id}" type="checkbox" name="event-offer-${optionID}" data-title="${title}" data-price="${price}" ${isChecked ? `checked` : ``} ${isDisabled ? `disabled ` : ``}/>
     <label class="event__offer-label" for="event-offer-${optionID}-${id}">
       <span class="event__offer-title">${title}</span>
       &plus;
@@ -68,14 +68,14 @@ const getTypeTemplate = (type, isChecked, id) =>
   </div>`;
 
 const getPointEditTemplate = (point, destinations, offers) => {
-  const {id, type, prep, destination, cost, options, info} = point;
+  const {id, type, prep, destination, cost, options, info, isDeleting, isDisabled, isSaving} = point;
 
   const transferTypesTemplate = TYPES_TO.map((it) => getTypeTemplate(it, it === type, id)).join(``);
   const activityTypesTemplate = TYPES_IN.map((it) => getTypeTemplate(it, it === type, id)).join(``);
   const destinationOptionsTemplate = destinations.map((it) => getDestionationOptionTemplate(it)).join(``);
   const isNew = destination === `` ? true : false;
   const availableOptions = offers.find((offer) => offer.type === type.toLowerCase()).offers;
-  const optionsTemplate = availableOptions.length > 0 ? availableOptions.map((it, i) => getOptionsItemTemplate(it, `${type}-${i}`, options, id)).join(``) : false;
+  const optionsTemplate = availableOptions.length > 0 ? availableOptions.map((it, i) => getOptionsItemTemplate(it, `${type}-${i}`, options, id, isDisabled)).join(``) : false;
   const descriptionTemplate = getDescriptionTemplate(info);
 
   return `<form class="trip-events__item  event  event--edit" action="#" method="post">
@@ -85,7 +85,7 @@ const getPointEditTemplate = (point, destinations, offers) => {
           <span class="visually-hidden">Choose event type</span>
           <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Point type icon" />
         </label>
-        <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox" />
+        <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox" ${isDisabled ? `disabled ` : ``}/>
         <div class="event__type-list">
           <fieldset class="event__type-group">
             <legend class="visually-hidden">Transfer</legend>
@@ -99,27 +99,27 @@ const getPointEditTemplate = (point, destinations, offers) => {
       </div>
       <div class="event__field-group  event__field-group--destination">
         <label class="event__label  event__type-output" for="event-destination-${id}">${type} ${prep}</label>
-        <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${destination}" list="destination-list-${id}" />
+        <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${destination}" list="destination-list-${id}" ${isDisabled ? `disabled ` : ``}/>
         <datalist id="destination-list-${id}">
           ${destinationOptionsTemplate}
         </datalist>
       </div>
       <div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time-${id}">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="" />
+        <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="" ${isDisabled ? `disabled ` : ``}/>
         &mdash;
         <label class="visually-hidden" for="event-end-time-${id}">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="" />
+        <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="" ${isDisabled ? `disabled ` : ``}/>
       </div>
       <div class="event__field-group  event__field-group--price">
         <label class="event__label" for="event-price-${id}">
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${cost}" />
+        <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${cost}" ${isDisabled ? `disabled ` : ``}/>
       </div>
-      <button class="event__save-btn  btn  btn--blue" type="submit"${isNew ? ` disabled` : ``}>Save</button>
-      <button class="event__reset-btn" type="reset">${isNew ? `Cancel` : `Delete`}</button>
+      <button class="event__save-btn  btn  btn--blue" type="submit"${isNew || isDisabled ? ` disabled` : ``}>${isSaving ? `Saving...` : `Save`}</button>
+      <button class="event__reset-btn" type="reset" ${isDisabled ? `disabled` : ``}>${isNew ? `Cancel` : `${isDeleting ? `Deleting...` : `Delete`}`}</button>
       ${!isNew
     ? `<button class="event__rollup-btn" type="button">
         <span class="visually-hidden">Close event</span>
@@ -350,6 +350,9 @@ export default class PointEditView extends SmartView {
     const point = data;
 
     delete point.prep;
+    delete point.isDeleting;
+    delete point.isDisabled;
+    delete point.isSaving;
 
     return point;
   }
@@ -359,7 +362,10 @@ export default class PointEditView extends SmartView {
         {},
         point,
         {
-          prep: getPrep(point.type)
+          prep: getPrep(point.type),
+          isDeleting: false,
+          isDisabled: false,
+          isSaving: false
         }
     );
   }
