@@ -103,7 +103,6 @@ export default class TripPresenter {
         break;
       case UpdateType.INIT:
         this._isLoading = false;
-        remove(this._loading);
         this._renderTrip();
         break;
       case UpdateType.LOAD:
@@ -218,6 +217,8 @@ export default class TripPresenter {
 
       return;
     }
+
+    remove(this._loading);
 
     const points = this._getPoints();
 
