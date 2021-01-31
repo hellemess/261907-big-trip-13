@@ -94,7 +94,7 @@ export default class PointsModel extends Observer {
         {},
         point,
         {
-          [`base_price`]: point.cost,
+          [`base_price`]: +point.cost,
           [`date_from`]: point.time.start.toISOString(),
           [`date_to`]: point.time.finish.toISOString(),
           [`is_favorite`]: point.isFavorite,

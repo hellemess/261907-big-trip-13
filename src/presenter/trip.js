@@ -91,7 +91,7 @@ export default class TripPresenter {
   _handleModelEvent(updateType, data) {
     switch (updateType) {
       case UpdateType.PATCH:
-        this._pointPresenter[data.id].init(data);
+        this._pointPresenter[data.id].init(data, this._destinations, this._offers);
         break;
       case UpdateType.MINOR:
         this._clearList({resetHeader: true});

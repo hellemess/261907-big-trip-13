@@ -52,7 +52,7 @@ const getOptionsItemTemplate = (option, optionID, checkedOptions, id) => {
   const isChecked = checkedOptions.find((value) => value.title === title);
 
   return `<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${optionID}-${id}" type="checkbox" name="event-offer-${optionID}" data=title="${title}" data-price="${price}" ${isChecked ? `checked` : ``} />
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${optionID}-${id}" type="checkbox" name="event-offer-${optionID}" data-title="${title}" data-price="${price}" ${isChecked ? `checked` : ``} />
     <label class="event__offer-label" for="event-offer-${optionID}-${id}">
       <span class="event__offer-title">${title}</span>
       &plus;
@@ -244,7 +244,7 @@ export default class PointEditView extends SmartView {
       if (option.checked) {
         updatedOptions.push({
           title: option.dataset.title,
-          price: option.dataset.price
+          price: +option.dataset.price
         });
       }
     }
@@ -276,7 +276,10 @@ export default class PointEditView extends SmartView {
     this.element.querySelector(`.event__type-list`).addEventListener(`change`, this._transferTypeChangeHandler);
     this.element.querySelector(`.event__field-group--destination`).addEventListener(`input`, this._destinationChangeHandler);
     this.element.querySelector(`.event__input--price`).addEventListener(`input`, this._costChangeHandler);
-    // this.element.querySelector(`.event__offer-selector`).addEventListener(`change`, this._optionTypePickHandler);
+
+    if (this._offers.find((value) => value.type === this._data.type.toLowerCase()).offers.length > 0) {
+      this.element.querySelector(`.event__offer-selector`).addEventListener(`change`, this._optionTypePickHandler);
+    }
   }
 
   _transferTypeChangeHandler(evt) {
