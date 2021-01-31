@@ -11,7 +11,7 @@ import StatsView from './view/stats';
 import TripPresenter from './presenter/trip';
 
 const AUTHORIZATION = `Basic m000hujy6mvfbvg6gfvnhuy7tg5r6rf4dx`;
-const END_POINT = `https://13.ecmascript.pages.academy/big-trip/`;
+const END_POINT = `https://13.ecmascript.pages.academy/big-trip`;
 
 const api = new Api(END_POINT, AUTHORIZATION);
 const filterModel = new FilterModel();

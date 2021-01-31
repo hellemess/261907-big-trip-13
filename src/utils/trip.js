@@ -2,8 +2,6 @@ import {TYPES_IN} from '../const';
 
 export const areDatesValid = (startDate, finishDate) => startDate < finishDate;
 
-export const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
-
 export const getPrep = (type) => TYPES_IN.indexOf(type) < 0 ? `to` : `in`;
 
 export const isCostValid = (cost) => /^[0-9]*$/.test(cost) && (cost).length;

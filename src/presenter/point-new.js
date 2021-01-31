@@ -1,4 +1,3 @@
-import {generateId} from '../utils/trip';
 import {KeyCodes} from '../utils/common';
 import PointEditView from '../view/point-edit';
 import {RenderPosition, remove, render} from '../utils/render';
@@ -22,7 +21,7 @@ export default class PointNewPresenter {
     this._changeData(
         UserAction.ADD_POINT,
         UpdateType.MINOR,
-        Object.assign({id: generateId()}, point)
+        point
     );
 
     this.destroy();
@@ -55,5 +54,24 @@ export default class PointNewPresenter {
     this._pointEdit.deleteClickHandler = this._handleDeleteClick;
     render(this._container, this._pointEdit, RenderPosition.AFTERBEGIN);
     document.addEventListener(`keydown`, this._onEscKeyDown);
+  }
+
+  setAborting() {
+    const resetForm = () => {
+      this._pointEdit.updateData({
+        isDeleting: false,
+        isDisabled: false,
+        isSaving: false
+      });
+    };
+
+    this._pointEdit.shake(resetForm);
+  }
+
+  setSaving() {
+    this._pointEdit.updateData({
+      isDisabled: true,
+      isSaving: true
+    });
   }
 }
