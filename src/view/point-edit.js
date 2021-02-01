@@ -74,7 +74,7 @@ const getPointEditTemplate = (point, destinations, offers) => {
   const activityTypesTemplate = TYPES_IN.map((it) => getTypeTemplate(it, it === type, id)).join(``);
   const destinationOptionsTemplate = destinations.map((it) => getDestionationOptionTemplate(it)).join(``);
   const isNew = destination === `` ? true : false;
-  const availableOptions = offers.find((offer) => offer.type === type.toLowerCase()).offers;
+  const availableOptions = offers.length > 0 ? offers.find((offer) => offer.type === type.toLowerCase()).offers : [];
   const optionsTemplate = availableOptions.length > 0 ? availableOptions.map((it, i) => getOptionsItemTemplate(it, `${type}-${i}`, options, id, isDisabled)).join(``) : false;
   const descriptionTemplate = getDescriptionTemplate(info);
 
@@ -277,7 +277,7 @@ export default class PointEditView extends SmartView {
     this.element.querySelector(`.event__field-group--destination`).addEventListener(`input`, this._destinationChangeHandler);
     this.element.querySelector(`.event__input--price`).addEventListener(`input`, this._costChangeHandler);
 
-    if (this._offers.find((value) => value.type === this._data.type.toLowerCase()).offers.length > 0) {
+    if (this._offers.length > 0 && this._offers.find((value) => value.type === this._data.type.toLowerCase()).offers.length > 0) {
       this.element.querySelector(`.event__offer-selector`).addEventListener(`change`, this._optionTypePickHandler);
     }
   }

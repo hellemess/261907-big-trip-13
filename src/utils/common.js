@@ -15,3 +15,5 @@ export const getRandomInteger = (a = 0, b = 1) => {
 
   return Math.floor(min + Math.random() * (max - min + 1));
 };
+
+export const isOnline = () => window.navigator.onLine;

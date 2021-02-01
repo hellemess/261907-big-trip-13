@@ -1,4 +1,4 @@
-import PointsModel from './model/points';
+import PointsModel from '../model/points';
 
 const Method = {
   GET: `GET`,
@@ -19,17 +19,17 @@ export default class Api {
   }
 
   _load({
-      url,
-      method = Method.GET,
-      body = null,
-      headers = new Headers()
+    url,
+    method = Method.GET,
+    body = null,
+    headers = new Headers()
   }) {
     headers.append(`Authorization`, this._authorization);
 
     return fetch(
         `${this._endPoint}/${url}`,
         {method, body, headers}
-      )
+    )
       .then(Api.checkStatus)
       .catch(Api.catchError);
   }
@@ -68,13 +68,23 @@ export default class Api {
     });
   }
 
+  sync(data) {
+    return this._load({
+      url: `points/sync`,
+      method: Method.POST,
+      body: JSON.stringify(data),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+      .then(Api.toJSON);
+  }
+
   updatePoint(point) {
     return this._load({
-        url: `points/${point.id}`,
-        method: Method.PUT,
-        body: JSON.stringify(PointsModel.adaptToServer(point)),
-        headers: new Headers({"Content-Type": `application/json`})
-      })
+      url: `points/${point.id}`,
+      method: Method.PUT,
+      body: JSON.stringify(PointsModel.adaptToServer(point)),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
       .then(Api.toJSON)
       .then(PointsModel.adaptToClient);
   }
