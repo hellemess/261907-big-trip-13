@@ -1,5 +1,6 @@
 import {FilterType, UpdateType} from '../const';
 import FilterView from '../view/filter.js';
+import {isFuturePoint} from '../utils/trip';
 import {RenderPosition, remove, render, replace} from '../utils/render';
 
 export default class Filter {
@@ -15,12 +16,23 @@ export default class Filter {
     this._pointsModel.addObserver(this._handleModelEvent);
   }
 
-  _getFilters() {
-    return [
-      FilterType.EVERYTHING,
-      FilterType.FUTURE,
-      FilterType.PAST
+  _getFilters(points) {
+    const filters = [
+      {
+        title: FilterType.EVERYTHING,
+        count: points.length
+      },
+      {
+        title: FilterType.FUTURE,
+        count: points.filter((point) => isFuturePoint(point.time.start)).length
+      },
+      {
+        title: FilterType.PAST,
+        count: points.filter((point) => !isFuturePoint(point.time.start)).length
+      }
     ];
+
+    return filters;
   }
 
   _handleFilterTypeChange(filterType) {
@@ -38,7 +50,8 @@ export default class Filter {
   init() {
     this._currentFilter = this._filterModel.filter;
 
-    const filters = this._getFilters();
+    const points = this._pointsModel.points;
+    const filters = this._getFilters(points);
     const prevFilter = this._filter;
 
     this._filter = new FilterView(filters, this._currentFilter);

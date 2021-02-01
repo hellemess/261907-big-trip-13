@@ -1,7 +1,7 @@
 import Api from './api/api';
 import FilterModel from './model/filter';
 import FilterPresenter from './presenter/filter';
-import {FilterType, MenuItem, UpdateType} from './const';
+import {MenuItem, UpdateType} from './const';
 import HiddenHeadingView from './view/hidden-heading';
 import {isOnline} from './utils/common';
 import MenuView from './view/menu';
@@ -43,7 +43,7 @@ render(controls, new HiddenHeadingView(`Filter events`), RenderPosition.BEFOREEN
 render(controls, newPointButtonView, RenderPosition.AFTEREND);
 
 const handleMenuClick = (menuItem) => {
-  if (menu.menuItem === menuItem)
+  if (menu.menuItem === menuItem || !statsPresenter.isReady())
   {
     return;
   }
