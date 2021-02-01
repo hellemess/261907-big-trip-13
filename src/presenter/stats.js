@@ -26,7 +26,7 @@ export default class StatsPresenter {
     }
   }
 
-  isReady () {
+  isReady() {
     return this._stats !== null;
   }
 
