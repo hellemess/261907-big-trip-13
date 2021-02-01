@@ -13,7 +13,7 @@ import SortingView from '../view/sorting';
 import {sortDate, sortPrice, sortTime} from '../utils/trip';
 
 export default class TripPresenter {
-  constructor(header, container, pointsModel, filterModel, api, statsPresenter) {
+  constructor(header, container, pointsModel, filterModel, api, statsPresenter, newButton) {
     this._pointsModel = pointsModel;
     this._filterModel = filterModel;
     this._api = api;
@@ -39,6 +39,7 @@ export default class TripPresenter {
     this._isLoading = true;
     this._destinations = null;
     this._offers = null;
+    this._newButton = newButton;
   }
 
   _clearList({resetHeader = false, resetSortType = false} = {}) {
@@ -219,6 +220,7 @@ export default class TripPresenter {
     }
 
     remove(this._loading);
+    this.show();
 
     const points = this._getPoints();
 
@@ -240,7 +242,7 @@ export default class TripPresenter {
   createPoint() {
     this._currentSortType = SortTypes.DATE;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this._pointNewPresenter.init(this._destinations, this._offers);
+    this._pointNewPresenter.init(this._destinations, this._offers, this._newButton);
   }
 
   hide() {
@@ -271,12 +273,16 @@ export default class TripPresenter {
       });
   }
 
-  show() {
+  show({resetSortType = false} = {}) {
     this._container.classList.remove(`visually-hidden`);
-    this._clearList({resetSortType: true});
 
-    const points = this._getPoints();
+    if (resetSortType)
+    {
+      this._clearList({resetSortType: true});
 
-    this._renderList(points);
+      const points = this._getPoints();
+
+      this._renderList(points);
+    }
   }
 }

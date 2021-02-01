@@ -41,6 +41,7 @@ export default class PointPresenter {
   _handleDeleteClick(point) {
     if (!isOnline()) {
       offline(`You can’t delete event offline`);
+      this._pointEdit.shake();
       return;
     }
 
@@ -68,6 +69,7 @@ export default class PointPresenter {
   _handleFormSubmit(point) {
     if (!isOnline()) {
       offline(`You can’t save event offline`);
+      this._pointEdit.shake();
       return;
     }
 

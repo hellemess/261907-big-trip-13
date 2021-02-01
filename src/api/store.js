@@ -20,7 +20,7 @@ export default class Store {
   }
 
   removeItem(key) {
-    const store = this.getItems();
+    const store = this.items;
 
     delete store[key];
 

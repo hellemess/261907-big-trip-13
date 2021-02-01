@@ -30,12 +30,12 @@ const header = document.querySelector('.trip-main');
 const controls = header.querySelector(`.trip-controls`);
 const content = document.querySelector(`.trip-events`);
 
-const statsPresenter = new StatsPresenter(content);
-const tripPresenter = new TripPresenter(header, content, pointsModel, filterModel, apiWithProvider, statsPresenter);
-const filterPresenter = new FilterPresenter(controls, filterModel, pointsModel);
-
 const menu = new MenuView();
 const newPointButtonView = new NewPointButtonView();
+
+const statsPresenter = new StatsPresenter(content);
+const tripPresenter = new TripPresenter(header, content, pointsModel, filterModel, apiWithProvider, statsPresenter, newPointButtonView);
+const filterPresenter = new FilterPresenter(controls, filterModel, pointsModel);
 
 render(controls, new HiddenHeadingView(`Switch trip view`), RenderPosition.BEFOREEND);
 render(controls, menu, RenderPosition.BEFOREEND);
@@ -72,9 +72,10 @@ const handleNewPointButtonClick = () => {
   {
     menu.menuItem = MenuItem.TABLE;
     statsPresenter.hide();
-    tripPresenter.show();
+    tripPresenter.show({resetSortType: true});
   }
 
+  newPointButtonView.element.disabled = true;
   tripPresenter.createPoint();
 };
 
@@ -97,9 +98,9 @@ apiWithProvider.points
     showMenu([]);
   });
 
-window.addEventListener(`load`, () => {
-  navigator.serviceWorker.register(`/sw.js`);
-});
+// window.addEventListener(`load`, () => {
+//   navigator.serviceWorker.register(`/sw.js`);
+// });
 
 window.addEventListener(`online`, () => {
   document.title = document.title.replace(` [offline]`, ``);

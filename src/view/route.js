@@ -18,9 +18,9 @@ const getRouteTemplate = (points) => {
   return `<div class="trip-info__main">
     <h1 class="trip-info__title">${places.length > 3 ? `${places[0]} &mdash; ... &mdash; ${places[places.length - 1]}` : `${places.join(` &mdash; `)}`}</h1>
     <p class="trip-info__dates">
-      ${startMonth} ${startDate}
-      ${startDate !== finishDate
-    ? `&nbsp;&mdash;&nbsp;${startMonth !== finishMonth ? `${finishMonth} ` : ``}${finishDate}`
+      ${startDate} 
+      ${startMonth !== finishMonth ? `${startMonth} ` : ``}
+      ${startDate !== finishDate  ? `&nbsp;&mdash;&nbsp;${finishDate} ${finishMonth}`
     : ``}
     </p>
   </div>`;
