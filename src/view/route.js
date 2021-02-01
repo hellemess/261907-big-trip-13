@@ -20,7 +20,7 @@ const getRouteTemplate = (points) => {
     <p class="trip-info__dates">
       ${startDate} 
       ${startMonth !== finishMonth ? `${startMonth} ` : ``}
-      ${startDate !== finishDate  ? `&nbsp;&mdash;&nbsp;${finishDate} ${finishMonth}`
+      ${startDate !== finishDate ? `&nbsp;&mdash;&nbsp;${finishDate} ${finishMonth}`
     : ``}
     </p>
   </div>`;

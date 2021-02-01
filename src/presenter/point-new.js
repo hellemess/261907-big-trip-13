@@ -50,7 +50,7 @@ export default class PointNewPresenter {
     if (this._pointEdit !== null) {
       return;
     }
-    
+
     this._newButton = newButton;
     this._pointEdit = new PointEditView(destinations, offers);
     this._pointEdit.formSubmitHandler = this._handleFormSubmit;

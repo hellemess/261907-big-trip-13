@@ -276,8 +276,7 @@ export default class TripPresenter {
   show({resetSortType = false} = {}) {
     this._container.classList.remove(`visually-hidden`);
 
-    if (resetSortType)
-    {
+    if (resetSortType) {
       this._clearList({resetSortType: true});
 
       const points = this._getPoints();
