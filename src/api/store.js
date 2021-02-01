@@ -31,7 +31,7 @@ export default class Store {
   }
 
   setItem(key, value) {
-    const store = this.getItems();
+    const store = this.items;
 
     this._storage.setItem(
         this._storeKey,
