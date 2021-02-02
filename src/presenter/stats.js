@@ -26,6 +26,10 @@ export default class StatsPresenter {
     }
   }
 
+  isReady() {
+    return this._stats !== null;
+  }
+
   show() {
     this._stats.show();
   }

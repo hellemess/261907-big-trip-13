@@ -1,7 +1,7 @@
 import Api from './api/api';
 import FilterModel from './model/filter';
 import FilterPresenter from './presenter/filter';
-import {FilterType, MenuItem, UpdateType} from './const';
+import {MenuItem, UpdateType} from './const';
 import HiddenHeadingView from './view/hidden-heading';
 import {isOnline} from './utils/common';
 import MenuView from './view/menu';
@@ -30,12 +30,12 @@ const header = document.querySelector('.trip-main');
 const controls = header.querySelector(`.trip-controls`);
 const content = document.querySelector(`.trip-events`);
 
-const statsPresenter = new StatsPresenter(content);
-const tripPresenter = new TripPresenter(header, content, pointsModel, filterModel, apiWithProvider, statsPresenter);
-const filterPresenter = new FilterPresenter(controls, filterModel, pointsModel);
-
 const menu = new MenuView();
 const newPointButtonView = new NewPointButtonView();
+
+const statsPresenter = new StatsPresenter(content);
+const tripPresenter = new TripPresenter(header, content, pointsModel, filterModel, apiWithProvider, statsPresenter, newPointButtonView);
+const filterPresenter = new FilterPresenter(controls, filterModel, pointsModel);
 
 render(controls, new HiddenHeadingView(`Switch trip view`), RenderPosition.BEFOREEND);
 render(controls, menu, RenderPosition.BEFOREEND);
@@ -43,7 +43,7 @@ render(controls, new HiddenHeadingView(`Filter events`), RenderPosition.BEFOREEN
 render(controls, newPointButtonView, RenderPosition.AFTEREND);
 
 const handleMenuClick = (menuItem) => {
-  if (menu.menuItem === menuItem)
+  if (menu.menuItem === menuItem || !statsPresenter.isReady())
   {
     return;
   }
@@ -75,6 +75,7 @@ const handleNewPointButtonClick = () => {
     tripPresenter.show();
   }
 
+  newPointButtonView.element.disabled = true;
   tripPresenter.createPoint();
 };
 

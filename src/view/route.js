@@ -1,4 +1,5 @@
 import AbstractView from './abstract';
+import dayjs from 'dayjs';
 
 const getRouteTemplate = (points) => {
   const places = [];
@@ -9,17 +10,17 @@ const getRouteTemplate = (points) => {
     }
   }
 
-  const startMonth = points[0].time.start.toLocaleString(`en-GB`, {month: `short`});
-  const startDate = points[0].time.start.getDate();
-  const finishMonth = points[points.length - 1].time.start.toLocaleString(`en-GB`, {month: `short`});
-  const finishDate = points[points.length - 1].time.start.getDate();
+  const startMonth = dayjs(points[0].time.start).format(`MMM`);
+  const startDate = dayjs(points[0].time.start).format(`D`);
+  const finishMonth = dayjs(points[points.length - 1].time.finish).format(`MMM`);
+  const finishDate = dayjs(points[points.length - 1].time.finish).format(`D`);
 
   return `<div class="trip-info__main">
     <h1 class="trip-info__title">${places.length > 3 ? `${places[0]} &mdash; ... &mdash; ${places[places.length - 1]}` : `${places.join(` &mdash; `)}`}</h1>
     <p class="trip-info__dates">
-      ${startMonth} ${startDate}
-      ${startDate !== finishDate
-    ? `&nbsp;&mdash;&nbsp;${startMonth !== finishMonth ? `${finishMonth} ` : ``}${finishDate}`
+      ${startDate} 
+      ${startMonth !== finishMonth ? `${startMonth} ` : ``}
+      ${startDate !== finishDate ? `&nbsp;&mdash;&nbsp;${finishDate} ${finishMonth}`
     : ``}
     </p>
   </div>`;

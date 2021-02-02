@@ -29,12 +29,16 @@ export default class AbstractView {
     this._element = null;
   }
 
-  shake(callback) {
+  shake(callback = false) {
     this.element.classList.add(ANIMATION_CLASS);
 
     const shakeTimeout = setTimeout(() => {
       this.element.classList.remove(ANIMATION_CLASS);
-      callback();
+
+      if (callback) {
+        callback();
+      }
+
       clearTimeout(shakeTimeout);
     }, ANIMATION_TIMEOUT);
   }

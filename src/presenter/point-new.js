@@ -7,6 +7,7 @@ export default class PointNewPresenter {
   constructor(container, changeData) {
     this._container = container;
     this._changeData = changeData;
+    this._newButton = null;
     this._pointEdit = null;
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
@@ -41,14 +42,16 @@ export default class PointNewPresenter {
 
     remove(this._pointEdit);
     this._pointEdit = null;
+    this._newButton.element.disabled = false;
     document.removeEventListener(`keydown`, this._onEscKeyDown);
   }
 
-  init(destinations, offers) {
+  init(destinations, offers, newButton) {
     if (this._pointEdit !== null) {
       return;
     }
 
+    this._newButton = newButton;
     this._pointEdit = new PointEditView(destinations, offers);
     this._pointEdit.formSubmitHandler = this._handleFormSubmit;
     this._pointEdit.deleteClickHandler = this._handleDeleteClick;
