@@ -237,12 +237,9 @@ export default class TripPresenter {
       this._renderList(points);
       this._statsPresenter.init(points);
 
-      if (this._isStatsShown)
-      {
+      if (this._isStatsShown) {
         this._statsPresenter.show();
-      }
-      else
-      {
+      } else {
         this._statsPresenter.hide();
       }
     }
