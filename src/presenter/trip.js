@@ -40,6 +40,7 @@ export default class TripPresenter {
     this._destinations = null;
     this._offers = null;
     this._newButton = newButton;
+    this._isStatsShown = false;
   }
 
   _clearList({resetHeader = false, resetSortType = false} = {}) {
@@ -220,7 +221,6 @@ export default class TripPresenter {
     }
 
     remove(this._loading);
-    this.show();
 
     const points = this._getPoints();
 
@@ -236,6 +236,15 @@ export default class TripPresenter {
 
       this._renderList(points);
       this._statsPresenter.init(points);
+
+      if (this._isStatsShown)
+      {
+        this._statsPresenter.show();
+      }
+      else
+      {
+        this._statsPresenter.hide();
+      }
     }
   }
 
@@ -247,6 +256,7 @@ export default class TripPresenter {
 
   hide() {
     this._container.classList.add(`visually-hidden`);
+    this._isStatsShown = true;
   }
 
   init() {
@@ -273,15 +283,13 @@ export default class TripPresenter {
       });
   }
 
-  show({resetSortType = false} = {}) {
+  show() {
     this._container.classList.remove(`visually-hidden`);
+    this._isStatsShown = false;
+    this._clearList({resetSortType: true});
 
-    if (resetSortType) {
-      this._clearList({resetSortType: true});
+    const points = this._getPoints();
 
-      const points = this._getPoints();
-
-      this._renderList(points);
-    }
+    this._renderList(points);
   }
 }

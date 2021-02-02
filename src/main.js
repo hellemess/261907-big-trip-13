@@ -72,7 +72,7 @@ const handleNewPointButtonClick = () => {
   {
     menu.menuItem = MenuItem.TABLE;
     statsPresenter.hide();
-    tripPresenter.show({resetSortType: true});
+    tripPresenter.show();
   }
 
   newPointButtonView.element.disabled = true;
@@ -98,9 +98,9 @@ apiWithProvider.points
     showMenu([]);
   });
 
-// window.addEventListener(`load`, () => {
-//   navigator.serviceWorker.register(`/sw.js`);
-// });
+window.addEventListener(`load`, () => {
+  navigator.serviceWorker.register(`/sw.js`);
+});
 
 window.addEventListener(`online`, () => {
   document.title = document.title.replace(` [offline]`, ``);
