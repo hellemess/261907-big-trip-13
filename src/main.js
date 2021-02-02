@@ -9,7 +9,7 @@ import NewPointButtonView from './view/new-point-button';
 import {offline} from './utils/offline/offline';
 import PointsModel from './model/points';
 import Provider from './api/provider';
-import {RenderPosition, remove, render} from './utils/render';
+import {RenderPosition, render} from './utils/render';
 import StatsPresenter from './presenter/stats';
 import Store from './api/store';
 import TripPresenter from './presenter/trip';
@@ -26,7 +26,7 @@ const apiWithProvider = new Provider(api, store);
 const filterModel = new FilterModel();
 const pointsModel = new PointsModel();
 
-const header = document.querySelector('.trip-main');
+const header = document.querySelector(`.trip-main`);
 const controls = header.querySelector(`.trip-controls`);
 const content = document.querySelector(`.trip-events`);
 
@@ -43,8 +43,7 @@ render(controls, new HiddenHeadingView(`Filter events`), RenderPosition.BEFOREEN
 render(controls, newPointButtonView, RenderPosition.AFTEREND);
 
 const handleMenuClick = (menuItem) => {
-  if (menu.menuItem === menuItem || !statsPresenter.isReady())
-  {
+  if (menu.menuItem === menuItem || !statsPresenter.isReady()) {
     return;
   }
 
@@ -67,9 +66,8 @@ const handleNewPointButtonClick = () => {
     offline(`You can’t create new event offline`);
     return;
   }
-  
-  if (menu.menuItem === MenuItem.STATS)
-  {
+
+  if (menu.menuItem === MenuItem.STATS) {
     menu.menuItem = MenuItem.TABLE;
     statsPresenter.hide();
     tripPresenter.show();
@@ -79,11 +77,11 @@ const handleNewPointButtonClick = () => {
   tripPresenter.createPoint();
 };
 
-const showMenu = (points) => {
+const showMenu = () => {
   menu.menuClickHandler = handleMenuClick;
   newPointButtonView.element.disabled = false;
   newPointButtonView.clickHadler = handleNewPointButtonClick;
-}
+};
 
 filterPresenter.init();
 tripPresenter.init();
@@ -91,11 +89,11 @@ tripPresenter.init();
 apiWithProvider.points
   .then((points) => {
     pointsModel.setPoints(UpdateType.INIT, points);
-    showMenu(points);
+    showMenu();
   })
   .catch(() => {
     pointsModel.setPoints(UpdateType.INIT, []);
-    showMenu([]);
+    showMenu();
   });
 
 window.addEventListener(`load`, () => {

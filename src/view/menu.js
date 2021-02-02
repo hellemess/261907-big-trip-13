@@ -27,7 +27,7 @@ export default class MenuView extends AbstractView {
   set menuClickHandler(callback) {
     this._callback.menuClick = callback;
 
-    for (let link of this.element.querySelectorAll(`.trip-tabs__btn`)) {
+    for (const link of this.element.querySelectorAll(`.trip-tabs__btn`)) {
       link.addEventListener(`click`, this._menuClickHandler);
     }
   }

@@ -3,10 +3,10 @@ import AbstractView from './abstract';
 const getCostTemplate = (points) => {
   let cost = 0;
 
-  for (let point of points) {
+  for (const point of points) {
     cost += +point.cost;
 
-    for (let option of point.options) {
+    for (const option of point.options) {
       cost += +option.price;
     }
   }
