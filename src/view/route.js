@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 const getRouteTemplate = (points) => {
   const places = [];
 
-  for (let point of points) {
+  for (const point of points) {
     if (point.destination !== places[places.length - 1]) {
       places.push(point.destination);
     }

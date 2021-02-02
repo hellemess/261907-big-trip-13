@@ -240,7 +240,7 @@ export default class PointEditView extends SmartView {
 
     const updatedOptions = [];
 
-    for (let option of this.element.querySelectorAll(`.event__offer-checkbox`)) {
+    for (const option of this.element.querySelectorAll(`.event__offer-checkbox`)) {
       if (option.checked) {
         updatedOptions.push({
           title: option.dataset.title,
