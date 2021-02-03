@@ -51,20 +51,6 @@ export default class Provider {
     return Promise.resolve(storePoints.map(PointsModel.adaptToClient));
   }
 
-  updatePoint(point) {
-    if (isOnline()) {
-      return this._api.updatePoint(point)
-        .then((updatedPoint) => {
-          this._store.setItem(updatedPoint.id, PointsModel.adaptToServer(updatedPoint));
-          return updatedPoint;
-        });
-    }
-
-    this._store.setItem(point.id, PointsModel.adaptToServer(Object.assign({}, point)));
-
-    return Promise.resolve(point);
-  }
-
   addPoint(point) {
     if (isOnline()) {
       return this._api.addPoint(point)
@@ -102,5 +88,19 @@ export default class Provider {
     }
 
     return Promise.reject(new Error(`Sync data failed`));
+  }
+
+  updatePoint(point) {
+    if (isOnline()) {
+      return this._api.updatePoint(point)
+        .then((updatedPoint) => {
+          this._store.setItem(updatedPoint.id, PointsModel.adaptToServer(updatedPoint));
+          return updatedPoint;
+        });
+    }
+
+    this._store.setItem(point.id, PointsModel.adaptToServer(Object.assign({}, point)));
+
+    return Promise.resolve(point);
   }
 }

@@ -1,4 +1,3 @@
-
 import PointEditView from '../view/point-edit';
 import PointView from '../view/point';
 import {isOnline, KeyCodes} from '../utils/common';
@@ -31,83 +30,6 @@ export default class PointPresenter {
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleOpenClick = this._handleOpenClick.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
-  }
-
-  _handleCloseClick() {
-    this._pointEdit.reset(this._point);
-    this._switchFormToPoint();
-  }
-
-  _handleDeleteClick(point) {
-    if (!isOnline()) {
-      offline(`You can’t delete event offline`);
-      this._pointEdit.shake();
-      return;
-    }
-
-    this._changeData(
-        UserAction.DELETE_POINT,
-        UpdateType.MINOR,
-        point
-    );
-  }
-
-  _handleFavoriteClick() {
-    this._changeData(
-        UserAction.UPDATE_POINT,
-        UpdateType.PATCH,
-        Object.assign(
-            {},
-            this._point,
-            {
-              isFavorite: !this._point.isFavorite
-            }
-        )
-    );
-  }
-
-  _handleFormSubmit(point) {
-    if (!isOnline()) {
-      offline(`You can’t save event offline`);
-      this._pointEdit.shake();
-      return;
-    }
-
-    this._changeData(
-        UserAction.UPDATE_POINT,
-        UpdateType.MINOR,
-        point
-    );
-  }
-
-  _handleOpenClick() {
-    if (!isOnline()) {
-      offline(`You can’t edit event offline`);
-      return;
-    }
-
-    this._switchPointToForm();
-  }
-
-  _onEscKeyDown(evt) {
-    if (evt.keyCode === KeyCodes.ESC) {
-      evt.preventDefault();
-      this._pointEdit.reset(this._point);
-      this._switchFormToPoint();
-    }
-  }
-
-  _switchPointToForm() {
-    replace(this._pointEdit, this._pointItem);
-    document.addEventListener(`keydown`, this._onEscKeyDown);
-    this._changeMode();
-    this._mode = Mode.EDITING;
-  }
-
-  _switchFormToPoint() {
-    replace(this._pointItem, this._pointEdit);
-    document.removeEventListener(`keydown`, this._onEscKeyDown);
-    this._mode = Mode.DEFAULT;
   }
 
   destroy() {
@@ -181,6 +103,83 @@ export default class PointPresenter {
         this._pointItem.shake(resetState);
         this._pointEdit.shake(resetState);
         break;
+    }
+  }
+
+  _switchPointToForm() {
+    replace(this._pointEdit, this._pointItem);
+    document.addEventListener(`keydown`, this._onEscKeyDown);
+    this._changeMode();
+    this._mode = Mode.EDITING;
+  }
+
+  _switchFormToPoint() {
+    replace(this._pointItem, this._pointEdit);
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
+    this._mode = Mode.DEFAULT;
+  }
+
+  _handleCloseClick() {
+    this._pointEdit.reset(this._point);
+    this._switchFormToPoint();
+  }
+
+  _handleDeleteClick(point) {
+    if (!isOnline()) {
+      offline(`You can’t delete event offline`);
+      this._pointEdit.shake();
+      return;
+    }
+
+    this._changeData(
+        UserAction.DELETE_POINT,
+        UpdateType.MINOR,
+        point
+    );
+  }
+
+  _handleFavoriteClick() {
+    this._changeData(
+        UserAction.UPDATE_POINT,
+        UpdateType.PATCH,
+        Object.assign(
+            {},
+            this._point,
+            {
+              isFavorite: !this._point.isFavorite
+            }
+        )
+    );
+  }
+
+  _handleFormSubmit(point) {
+    if (!isOnline()) {
+      offline(`You can’t save event offline`);
+      this._pointEdit.shake();
+      return;
+    }
+
+    this._changeData(
+        UserAction.UPDATE_POINT,
+        UpdateType.MINOR,
+        point
+    );
+  }
+
+  _handleOpenClick() {
+    if (!isOnline()) {
+      offline(`You can’t edit event offline`);
+      return;
+    }
+
+    this._switchPointToForm();
+  }
+
+  _onEscKeyDown(evt) {
+    if (evt.keyCode === KeyCodes.ESC) {
+      evt.preventDefault();
+      this._pointEdit.reset(this._point);
+      this._switchFormToPoint();
     }
   }
 }

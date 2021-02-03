@@ -43,6 +43,51 @@ export default class TripPresenter {
     this._isStatsShown = false;
   }
 
+  createPoint() {
+    this._currentSortType = SortTypes.DATE;
+    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this._pointNewPresenter.init(this._destinations, this._offers, this._newButton);
+  }
+
+  hide() {
+    this._container.classList.add(`visually-hidden`);
+    this._isStatsShown = true;
+  }
+
+  init() {
+    this._renderTrip();
+
+    this._api.destinations
+      .then((destinations) => {
+        this._destinations = destinations;
+        this._pointsModel.loadInfo(UpdateType.LOAD);
+      })
+      .catch(() => {
+        this._destinations = [];
+        this._pointsModel.loadInfo(UpdateType.LOAD);
+      });
+
+    this._api.offers
+      .then((offers) => {
+        this._offers = offers;
+        this._pointsModel.loadInfo(UpdateType.LOAD);
+      })
+      .catch(() => {
+        this._offers = [];
+        this._pointsModel.loadInfo(UpdateType.LOAD);
+      });
+  }
+
+  show() {
+    this._container.classList.remove(`visually-hidden`);
+    this._isStatsShown = false;
+    this._clearList({resetSortType: true});
+
+    const points = this._getPoints();
+
+    this._renderList(points);
+  }
+
   _clearList({resetHeader = false, resetSortType = false} = {}) {
     this._pointNewPresenter.destroy();
 
@@ -81,88 +126,6 @@ export default class TripPresenter {
     }
 
     return filtredPoints.sort(sortDate);
-  }
-
-  _handleModeChange() {
-    this._pointNewPresenter.destroy();
-
-    Object
-      .values(this._pointPresenter)
-      .forEach((presenter) => presenter.resetView());
-  }
-
-  _handleModelEvent(updateType, data) {
-    switch (updateType) {
-      case UpdateType.PATCH:
-        this._pointPresenter[data.id].init(data, this._destinations, this._offers);
-        break;
-      case UpdateType.MINOR:
-        this._clearList({resetHeader: true});
-        this._renderTrip();
-        break;
-      case UpdateType.MAJOR:
-        this._clearList({resetSortType: true, resetHeader: true});
-        this._renderTrip();
-        break;
-      case UpdateType.INIT:
-        this._isLoading = false;
-        this._renderTrip();
-        break;
-      case UpdateType.LOAD:
-        this._renderTrip();
-        break;
-    }
-  }
-
-  _handleSortTypeChange(sortType) {
-    if (sortType === this._currentSortType) {
-      return;
-    }
-
-    this._currentSortType = sortType;
-    this._clearList();
-    this._renderTrip();
-  }
-
-  _handleViewAction(actionType, updateType, update) {
-    switch (actionType) {
-      case UserAction.UPDATE_POINT:
-        this._pointPresenter[update.id].setViewState(State.SAVING);
-
-        this._api.updatePoint(update)
-          .then((response) => {
-            this._pointsModel.updatePoint(updateType, response);
-          })
-          .catch(() => {
-            this._pointPresenter[update.id].setViewState(State.ABORTING);
-          });
-
-        break;
-      case UserAction.ADD_POINT:
-        this._pointNewPresenter.setSaving();
-
-        this._api.addPoint(update)
-          .then((response) => {
-            this._pointsModel.addPoint(updateType, response);
-          })
-          .catch(() => {
-            this._pointNewPresenter.setAborting();
-          });
-
-        break;
-      case UserAction.DELETE_POINT:
-        this._pointPresenter[update.id].setViewState(State.DELETING);
-
-        this._api.deletePoint(update)
-          .then(() => {
-            this._pointsModel.deletePoint(updateType, update);
-          })
-          .catch(() => {
-            this._pointPresenter[update.id].setViewState(State.ABORTING);
-          });
-
-        break;
-    }
   }
 
   _renderCost(points) {
@@ -245,48 +208,85 @@ export default class TripPresenter {
     }
   }
 
-  createPoint() {
-    this._currentSortType = SortTypes.DATE;
-    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this._pointNewPresenter.init(this._destinations, this._offers, this._newButton);
+  _handleModeChange() {
+    this._pointNewPresenter.destroy();
+
+    Object
+      .values(this._pointPresenter)
+      .forEach((presenter) => presenter.resetView());
   }
 
-  hide() {
-    this._container.classList.add(`visually-hidden`);
-    this._isStatsShown = true;
+  _handleModelEvent(updateType, data) {
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this._pointPresenter[data.id].init(data, this._destinations, this._offers);
+        break;
+      case UpdateType.MINOR:
+        this._clearList({resetHeader: true});
+        this._renderTrip();
+        break;
+      case UpdateType.MAJOR:
+        this._clearList({resetSortType: true, resetHeader: true});
+        this._renderTrip();
+        break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        this._renderTrip();
+        break;
+      case UpdateType.LOAD:
+        this._renderTrip();
+        break;
+    }
   }
 
-  init() {
+  _handleSortTypeChange(sortType) {
+    if (sortType === this._currentSortType) {
+      return;
+    }
+
+    this._currentSortType = sortType;
+    this._clearList();
     this._renderTrip();
-
-    this._api.destinations
-      .then((destinations) => {
-        this._destinations = destinations;
-        this._pointsModel.loadInfo(UpdateType.LOAD);
-      })
-      .catch(() => {
-        this._destinations = [];
-        this._pointsModel.loadInfo(UpdateType.LOAD);
-      });
-
-    this._api.offers
-      .then((offers) => {
-        this._offers = offers;
-        this._pointsModel.loadInfo(UpdateType.LOAD);
-      })
-      .catch(() => {
-        this._offers = [];
-        this._pointsModel.loadInfo(UpdateType.LOAD);
-      });
   }
 
-  show() {
-    this._container.classList.remove(`visually-hidden`);
-    this._isStatsShown = false;
-    this._clearList({resetSortType: true});
+  _handleViewAction(actionType, updateType, update) {
+    switch (actionType) {
+      case UserAction.UPDATE_POINT:
+        this._pointPresenter[update.id].setViewState(State.SAVING);
 
-    const points = this._getPoints();
+        this._api.updatePoint(update)
+          .then((response) => {
+            this._pointsModel.updatePoint(updateType, response);
+          })
+          .catch(() => {
+            this._pointPresenter[update.id].setViewState(State.ABORTING);
+          });
 
-    this._renderList(points);
+        break;
+      case UserAction.ADD_POINT:
+        this._pointNewPresenter.setSaving();
+
+        this._api.addPoint(update)
+          .then((response) => {
+            this._pointsModel.addPoint(updateType, response);
+          })
+          .catch(() => {
+            this._pointNewPresenter.setAborting();
+          });
+
+        break;
+      case UserAction.DELETE_POINT:
+        this._pointPresenter[update.id].setViewState(State.DELETING);
+
+        this._api.deletePoint(update)
+          .then(() => {
+            this._pointsModel.deletePoint(updateType, update);
+          })
+          .catch(() => {
+            this._pointPresenter[update.id].setViewState(State.ABORTING);
+          });
+
+        break;
+    }
   }
 }

@@ -8,11 +8,6 @@ export default class MenuView extends AbstractView {
     this._menuClickHandler = this._menuClickHandler.bind(this);
   }
 
-  _menuClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.menuClick(evt.target.innerHTML);
-  }
-
   get menuItem() {
     return this._menuItem;
   }
@@ -41,5 +36,10 @@ export default class MenuView extends AbstractView {
       this.element.querySelector(`.trip-tabs__btn--active`).classList.remove(`trip-tabs__btn--active`);
       item.classList.add(`trip-tabs__btn--active`);
     }
+  }
+
+  _menuClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.menuClick(evt.target.innerHTML);
   }
 }

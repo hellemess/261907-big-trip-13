@@ -16,6 +16,25 @@ export default class Filter {
     this._pointsModel.addObserver(this._handleModelEvent);
   }
 
+  init() {
+    this._currentFilter = this._filterModel.filter;
+
+    const points = this._pointsModel.points;
+    const filters = this._getFilters(points);
+    const prevFilter = this._filter;
+
+    this._filter = new FilterView(filters, this._currentFilter);
+    this._filter.filterTypeChangeHandler = this._handleFilterTypeChange;
+
+    if (prevFilter === null) {
+      render(this._container, this._filter, RenderPosition.BEFOREEND);
+      return;
+    }
+
+    replace(this._filter, prevFilter);
+    remove(prevFilter);
+  }
+
   _getFilters(points) {
     const filters = [
       {
@@ -45,24 +64,5 @@ export default class Filter {
 
   _handleModelEvent() {
     this.init();
-  }
-
-  init() {
-    this._currentFilter = this._filterModel.filter;
-
-    const points = this._pointsModel.points;
-    const filters = this._getFilters(points);
-    const prevFilter = this._filter;
-
-    this._filter = new FilterView(filters, this._currentFilter);
-    this._filter.filterTypeChangeHandler = this._handleFilterTypeChange;
-
-    if (prevFilter === null) {
-      render(this._container, this._filter, RenderPosition.BEFOREEND);
-      return;
-    }
-
-    replace(this._filter, prevFilter);
-    remove(prevFilter);
   }
 }

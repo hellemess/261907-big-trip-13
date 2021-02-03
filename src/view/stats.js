@@ -149,23 +149,6 @@ export default class StatsView extends SmartView {
     this._setCharts();
   }
 
-  _setCharts() {
-    if (this._moneyChart !== null || this._timeChart !== null || this._typeChart !== null) {
-      this._moneyChart = null;
-      this._timeChart = null;
-      this._typeChart = null;
-    }
-
-    const moneyCtx = this.element.querySelector(`.statistics__chart--money`);
-    const typeCtx = this.element.querySelector(`.statistics__chart--transport`);
-    const timeCtx = this.element.querySelector(`.statistics__chart--time`);
-
-
-    renderMoneyChart(moneyCtx, this._points, this._types);
-    renderTypeChart(typeCtx, this._points, this._types);
-    renderTimeChart(timeCtx, this._points, this._types);
-  }
-
   get template() {
     return getStatsTemplate(this._points);
   }
@@ -182,5 +165,22 @@ export default class StatsView extends SmartView {
 
   restoreHandlers() {
     this._setCharts();
+  }
+
+  _setCharts() {
+    if (this._moneyChart !== null || this._timeChart !== null || this._typeChart !== null) {
+      this._moneyChart = null;
+      this._timeChart = null;
+      this._typeChart = null;
+    }
+
+    const moneyCtx = this.element.querySelector(`.statistics__chart--money`);
+    const typeCtx = this.element.querySelector(`.statistics__chart--transport`);
+    const timeCtx = this.element.querySelector(`.statistics__chart--time`);
+
+
+    renderMoneyChart(moneyCtx, this._points, this._types);
+    renderTypeChart(typeCtx, this._points, this._types);
+    renderTimeChart(timeCtx, this._points, this._types);
   }
 }

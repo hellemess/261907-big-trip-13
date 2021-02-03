@@ -14,27 +14,6 @@ export default class PointNewPresenter {
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
-  _handleDeleteClick() {
-    this.destroy();
-  }
-
-  _handleFormSubmit(point) {
-    this._changeData(
-        UserAction.ADD_POINT,
-        UpdateType.MINOR,
-        point
-    );
-
-    this.destroy();
-  }
-
-  _onEscKeyDown(evt) {
-    if (evt.keyCode === KeyCodes.ESC) {
-      evt.preventDefault();
-      this.destroy();
-    }
-  }
-
   destroy() {
     if (this._pointEdit === null) {
       return;
@@ -76,5 +55,26 @@ export default class PointNewPresenter {
       isDisabled: true,
       isSaving: true
     });
+  }
+
+  _handleDeleteClick() {
+    this.destroy();
+  }
+
+  _handleFormSubmit(point) {
+    this._changeData(
+        UserAction.ADD_POINT,
+        UpdateType.MINOR,
+        point
+    );
+
+    this.destroy();
+  }
+
+  _onEscKeyDown(evt) {
+    if (evt.keyCode === KeyCodes.ESC) {
+      evt.preventDefault();
+      this.destroy();
+    }
   }
 }

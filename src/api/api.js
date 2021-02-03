@@ -18,22 +18,6 @@ export default class Api {
     this._authorization = authorization;
   }
 
-  _load({
-    url,
-    method = Method.GET,
-    body = null,
-    headers = new Headers()
-  }) {
-    headers.append(`Authorization`, this._authorization);
-
-    return fetch(
-        `${this._endPoint}/${url}`,
-        {method, body, headers}
-    )
-      .then(Api.checkStatus)
-      .catch(Api.catchError);
-  }
-
   get destinations() {
     return this._load({url: `destinations`})
       .then(Api.toJSON);
@@ -87,6 +71,22 @@ export default class Api {
     })
       .then(Api.toJSON)
       .then(PointsModel.adaptToClient);
+  }
+
+  _load({
+    url,
+    method = Method.GET,
+    body = null,
+    headers = new Headers()
+  }) {
+    headers.append(`Authorization`, this._authorization);
+
+    return fetch(
+        `${this._endPoint}/${url}`,
+        {method, body, headers}
+    )
+      .then(Api.checkStatus)
+      .catch(Api.catchError);
   }
 
   static catchError(error) {

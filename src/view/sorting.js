@@ -8,11 +8,6 @@ export default class SortingView extends AbstractView {
     this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
   }
 
-  _sortTypeChangeHandler(evt) {
-    evt.preventDefault();
-    this._callback.sortTypeChange(evt.target.dataset.sortType);
-  }
-
   get template() {
     return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
         <div class="trip-sort__item  trip-sort__item--day">
@@ -41,5 +36,10 @@ export default class SortingView extends AbstractView {
   set sortTypeChangeHandler(callback) {
     this._callback.sortTypeChange = callback;
     this.element.addEventListener(`change`, this._sortTypeChangeHandler);
+  }
+
+  _sortTypeChangeHandler(evt) {
+    evt.preventDefault();
+    this._callback.sortTypeChange(evt.target.dataset.sortType);
   }
 }
